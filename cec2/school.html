@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>School Carbon Footprint Calculator</title>
+
+    <link rel="icon" href="d79fb0a61fbd53ce53c9c4492fc59e8f-removebg-preview.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="school.css">
+</head>
+
+<body>
+
+    <!-- SCHOOL NAVIGATION BAR -->
+
+    <nav class="school-navbar">
+
+        <div class="school-nav-brand">
+
+            <img
+                src="d79fb0a61fbd53ce53c9c4492fc59e8f-removebg-preview.png"
+                alt="KVS Logo"
+                class="school-nav-logo"
+            >
+
+            <div class="school-nav-info">
+
+                <span class="school-name">
+                    PM SHRI K.V. Andrews Ganj
+                </span>
+
+                <span class="school-location">
+                    New Delhi - 110024
+                </span>
+
+            </div>
+
+        </div>
+
+        <ul class="school-nav-links">
+
+            <li><a href="index.html">Home</a></li>
+
+            <li><a href="about.html">About</a></li>
+
+            <li><a href="household.html">Household Calculator</a></li>
+
+            <li>
+                <a href="school.html" class="active">
+                    School Calculator
+                </a>
+            </li>
+
+            <li><a href="tips.html">Tips</a></li>
+
+            <li><a href="resources.html">Resources</a></li>
+
+        </ul>
+
+    </nav>
+
+
+    <!-- PAGE HEADING -->
+
+    <div class="school-headline">
+
+        <h1>
+            School Carbon Footprint Calculator
+        </h1>
+
+        <p>
+            Estimate the annual carbon emissions of the entire school.
+        </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         DESKTOP SCHOOL WORKSPACE
+    ====================================================== -->
+
+    <div class="school-workspace">
+
+
+        <!-- =====================================================
+             LIVE TREE
+        ====================================================== -->
+
+        <div class="live-tree-box">
+
+            <div class="live-tree-title">
+                🌍 Live Impact
+            </div>
+
+            <div id="liveTreeEmoji" class="live-tree-emoji">
+                🌱
+            </div>
+
+            <div id="liveTreeCondition" class="live-tree-condition">
+                Start entering your school's data
+            </div>
+
+            <div class="live-tree-emission">
+
+                <span>
+                    Current emissions
+                </span>
+
+                <strong id="liveTreeCO2">
+                    0.00 kg CO₂e
+                </strong>
+
+            </div>
+
+            <div class="live-tree-breakdown">
+
+                <div>
+                    ⚡
+                    <span>Electricity</span>
+                    <strong id="liveElectricity">
+                        0.00 kg
+                    </strong>
+                </div>
+
+                <div>
+                    🚍
+                    <span>Travel</span>
+                    <strong id="liveTransport">
+                        0.00 kg
+                    </strong>
+                </div>
+
+                <div>
+                    ⛽
+                    <span>Fuel & Water</span>
+                    <strong id="liveFuel">
+                        0.00 kg
+                    </strong>
+                </div>
+
+                <div>
+                    ♻️
+                    <span>Waste</span>
+                    <strong id="liveWaste">
+                        0.00 kg
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             STEP 1 — SCHOOL PROFILE
+        ====================================================== -->
+
+        <div class="school-calc step" id="schoolStep1">
+
+            <div class="progress-bar">
+                <div class="progress-fill" style="width:20%;"></div>
+            </div>
+
+            <div class="school-icon">
+                🏫
+            </div>
+
+            <h2 class="school-hd2">
+                🏫 School Profile
+            </h2>
+
+            <label class="school-textx">
+                <span class="school-bt">•</span>
+                Number of Students:
+            </label>
+
+            <input
+                type="number"
+                id="students"
+                placeholder="e.g. 1200"
+                min="0"
+            >
+
+            <label class="school-textx">
+                <span class="school-bt">•</span>
+                Teaching & Non-Teaching Staff:
+            </label>
+
+            <input
+                type="number"
+                id="staff"
+                placeholder="e.g. 80"
+                min="0"
+            >
+
+            <label class="school-textx">
+                <span class="school-bt">•</span>
+                Working Days Per Year:
+            </label>
+
+            <input
+                type="number"
+                id="workingDays"
+                placeholder="e.g. 220"
+                min="0"
+            >
+
+            <label class="school-textx">
+                <span class="school-bt">•</span>
+                Total Built-up Area (m²):
+            </label>
+
+            <input
+                type="number"
+                id="schoolArea"
+                placeholder="e.g. 8000"
+                min="0"
+            >
+
+            <div class="school-button-container">
+
+                <button
+                    class="school-next-btn"
+                    onclick="schoolNextStep(2)"
+                >
+                    Next →
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             STEP 2 — ELECTRICITY
+        ====================================================== -->
+
+        <div
+            class="school-calc step"
+            id="schoolStep2"
+            style="display:none;"
+        >
+
+            <div class="progress-bar">
+                <div class="progress-fill" style="width:40%;"></div>
+            </div>
+
+            <div class="school-icon">
+                ⚡
+            </div>
+
+            <h2 class="school-hd2">
+                ⚡ Electricity & Solar
+            </h2>
+
+            <label class="school-textx">
+                <span class="school-bt">•</span>
+                Grid Electricity Used (kWh/Year):
+            </label>
+
+            <input
+                type="number"
+                id="gridElectricity"
+                placeholder="e.g. 150000"
+                min="0"
+            >
+
+            <label class="school-textx">
+                <span class="school-bt">•</span>
+                Solar Electricity Generated (kWh/Year):
+            </label>
+
+            <input
+                type="number"
+                id="solarElectricity"
+                placeholder="e.g. 25000"
+                min="0"
+            >
+
+            <label class="school-textx">
+                <span class="school-bt">•</span>
+                Electricity Emission Factor (kg CO₂e/kWh):
+            </label>
+
+            <input
+                type="number"
+                id="electricityFactor"
+                value="0.82"
+                step="0.01"
+                min="0"
+            >
+
+            <div class="school-note">
+                Solar generation is treated as reducing the school's
+                grid-electricity requirement.
+            </div>
+
+            <div class="school-button-container">
+
+                <button
+                    class="school-back-btn"
+                    onclick="schoolPrevStep(1)"
+                >
+                    ← Back
+                </button>
+
+                <button
+                    class="school-next-btn"
+                    onclick="schoolNextStep(3)"
+                >
+                    Next →
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             STEP 3 — TRANSPORTATION
+        ====================================================== -->
+
+        <div
+            class="school-calc step"
+            id="schoolStep3"
+            style="display:none;"
+        >
+
+            <div class="progress-bar">
+                <div class="progress-fill" style="width:60%;"></div>
+            </div>
+
+            <div class="school-icon">
+                🚌
+            </div>
+
+            <h2 class="school-hd2">
+                🚌 Transportation
+            </h2>
+
+            <h3 class="school-small-heading">
+                School Vehicles
+            </h3>
+
+            <label class="school-textx">
+                <span class="school-bt">•</span>
+                School Bus Diesel (L/Year):
+            </label>
+
+            <input
+                type="number"
+                id="busDiesel"
+                placeholder="e.g. 12000"
+                min="0"
+            >
+
+            <label class="school-textx">
+                <span class="school-bt">•</span>
+                School Cars/Vans Petrol (L/Year):
+            </label>
+
+            <input
+                type="number"
+                id="schoolPetrol"
+                placeholder="e.g. 2500"
+                min="0"
+            >
+
+            <h3 class="school-small-heading">
+                Student & Staff Commute
+            </h3>
+
+            <label class="school-textx">
+                <span class="school-bt">•</span>
+                Car Passenger Travel (person-km/year):
+            </label>
+
+            <input
+                type="number"
+                id="carTravel"
+                placeholder="e.g. 500000"
+                min="0"
+            >
+
+            <label class="school-textx">
+                <span class="school-bt">•</span>
+                Two-Wheeler Travel (person-km/year):
+            </label>
+
+            <input
+                type="number"
+                id="twoWheelerTravel"
+                placeholder="e.g. 700000"
+                min="0"
+            >
+
+            <label class="school-textx">
+                <span class="school-bt">•</span>
+                Bus Travel (person-km/year):
+            </label>
+
+            <input
+                type="number"
+                id="publicBusTravel"
+                placeholder="e.g. 300000"
+                min="0"
+            >
+
+            <label class="school-textx">
+                <span class="school-bt">•</span>
+                Metro/Rail Travel (person-km/year):
+            </label>
+
+            <input
+                type="number"
+                id="metroTravel"
+                placeholder="e.g. 400000"
+                min="0"
+            >
+
+            <div class="school-button-container">
+
+                <button
+                    class="school-back-btn"
+                    onclick="schoolPrevStep(2)"
+                >
+                    ← Back
+                </button>
+
+                <button
+                    class="school-next-btn"
+                    onclick="schoolNextStep(4)"
+                >
+                    Next →
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             STEP 4 — FUEL & WATER
+        ====================================================== -->
+
+        <div
+            class="school-calc step"
+            id="schoolStep4"
+            style="display:none;"
+        >
+
+            <div class="progress-bar">
+                <div class="progress-fill" style="width:80%;"></div>
+            </div>
+
+            <div class="school-icon">
+                🔥
+            </div>
+
+            <h2 class="school-hd2">
+                🔥 Fuel & Water
+            </h2>
+
+            <label class="school-textx">
+                <span class="school-bt">•</span>
+                Generator Diesel (L/Year):
+            </label>
+
+            <input
+                type="number"
+                id="generatorDiesel"
+                placeholder="e.g. 1500"
+                min="0"
+            >
+
+            <label class="school-textx">
+                <span class="school-bt">•</span>
+                LPG Used (kg/Year):
+            </label>
+
+            <input
+                type="number"
+                id="schoolLPG"
+                placeholder="e.g. 1000"
+                min="0"
+            >
+
+            <label class="school-textx">
+                <span class="school-bt">•</span>
+                Water Consumption (kL/Year):
+            </label>
+
+            <input
+                type="number"
+                id="waterUsage"
+                placeholder="e.g. 5000"
+                min="0"
+            >
+
+            <div class="school-button-container">
+
+                <button
+                    class="school-back-btn"
+                    onclick="schoolPrevStep(3)"
+                >
+                    ← Back
+                </button>
+
+                <button
+                    class="school-next-btn"
+                    onclick="schoolNextStep(5)"
+                >
+                    Next →
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             STEP 5 — WASTE
+        ====================================================== -->
+
+        <div
+            class="school-calc step"
+            id="schoolStep5"
+            style="display:none;"
+        >
+
+            <div class="progress-bar">
+                <div class="progress-fill" style="width:100%;"></div>
+            </div>
+
+            <div class="school-icon">
+                ♻️
+            </div>
+
+            <h2 class="school-hd2">
+                ♻️ School Waste
+            </h2>
+
+            <label class="school-textx">
+                <span class="school-bt">•</span>
+                Food/Organic Waste (kg/Year):
+            </label>
+
+            <input
+                type="number"
+                id="foodWaste"
+                placeholder="e.g. 5000"
+                min="0"
+            >
+
+            <label class="school-textx">
+                <span class="school-bt">•</span>
+                Paper/Cardboard Waste (kg/Year):
+            </label>
+
+            <input
+                type="number"
+                id="paperWaste"
+                placeholder="e.g. 3000"
+                min="0"
+            >
+
+            <label class="school-textx">
+                <span class="school-bt">•</span>
+                Plastic Waste (kg/Year):
+            </label>
+
+            <input
+                type="number"
+                id="plasticWaste"
+                placeholder="e.g. 1500"
+                min="0"
+            >
+
+            <label class="school-textx">
+                <span class="school-bt">•</span>
+                Other Waste (kg/Year):
+            </label>
+
+            <input
+                type="number"
+                id="otherWaste"
+                placeholder="e.g. 1000"
+                min="0"
+            >
+
+            <label class="school-textx">
+                <span class="school-bt">•</span>
+                Waste Recycled/Composted (%):
+            </label>
+
+            <input
+                type="number"
+                id="recycledPercent"
+                placeholder="e.g. 50"
+                min="0"
+                max="100"
+            >
+
+            <div class="school-button-container">
+
+                <button
+                    class="school-back-btn"
+                    onclick="schoolPrevStep(4)"
+                >
+                    ← Back
+                </button>
+
+                <button
+                    class="school-next-btn"
+                    onclick="calculateSchoolCarbon()"
+                >
+                    Calculate 🌍
+                </button>
+
+            </div>
+
+
+            <!-- RESULT -->
+
+            <div id="schoolResult" class="school-result">
+
+                <div class="school-result-header">
+
+                    <div class="school-result-icon">
+                        🌍
+                    </div>
+
+                    <h2>
+                        Your School's Annual Carbon Footprint
+                    </h2>
+
+                    <div class="school-total" id="schoolTotal">
+                        0.00
+                    </div>
+
+                    <p>
+                        tonnes CO₂e / year
+                    </p>
+
+                </div>
+
+
+                <div class="school-summary">
+
+                    <div class="summary-card">
+                        <span>🏫</span>
+                        <h3>Total Annual Emissions</h3>
+                        <strong id="schoolTotalKg">
+                            0.00 kg CO₂e
+                        </strong>
+                    </div>
+
+                    <div class="summary-card">
+                        <span>👥</span>
+                        <h3>Per Student / Staff</h3>
+                        <strong id="schoolPerPerson">
+                            0.00 kg CO₂e
+                        </strong>
+                    </div>
+
+                    <div class="summary-card">
+                        <span>📐</span>
+                        <h3>Per m² of School</h3>
+                        <strong id="schoolPerArea">
+                            0.00 kg CO₂e
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <div class="school-breakdown">
+
+                    <h3>
+                        📊 Emission Breakdown
+                    </h3>
+
+                    <div class="breakdown-item">
+
+                        <div>
+                            <span>⚡ Electricity & Solar</span>
+                            <strong id="schoolElectricity">
+                                0.00 tonnes
+                            </strong>
+                        </div>
+
+                        <div class="breakdown-bar">
+                            <div id="electricityBar"></div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="breakdown-item">
+
+                        <div>
+                            <span>🚌 Transportation</span>
+                            <strong id="schoolTransport">
+                                0.00 tonnes
+                            </strong>
+                        </div>
+
+                        <div class="breakdown-bar">
+                            <div id="transportBar"></div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="breakdown-item">
+
+                        <div>
+                            <span>⛽ Fuel & Water</span>
+                            <strong id="schoolFuel">
+                                0.00 tonnes
+                            </strong>
+                        </div>
+
+                        <div class="breakdown-bar">
+                            <div id="fuelBar"></div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="breakdown-item">
+
+                        <div>
+                            <span>♻️ Waste</span>
+                            <strong id="schoolWaste">
+                                0.00 tonnes
+                            </strong>
+                        </div>
+
+                        <div class="breakdown-bar">
+                            <div id="wasteBar"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="school-offset">
+
+                    <h3>
+                        🌳 Offset Estimate
+                    </h3>
+
+                    <div
+                        class="trees-number"
+                        id="schoolTrees"
+                    >
+                        0
+                    </div>
+
+                    <p>
+                        trees needed to offset the school's
+                        estimated annual emissions
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="school-result-message"
+                    id="schoolResultMessage"
+                >
+                    🌱 Every reduction can make a difference.
+                </div>
+
+
+                <div class="school-result-buttons">
+
+                    <button onclick="calculateSchoolAgain()">
+                        🔄 Calculate Again
+                    </button>
+
+                    <button onclick="window.print()">
+                        🖨️ Print Report
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             QUICK FACTS
+        ====================================================== -->
+
+        <aside
+            class="quick-facts-panel"
+            id="quickFactsPanel"
+        >
+
+            <div class="quick-facts-header">
+
+                <div class="quick-facts-label">
+                    💡 QUICK FACTS
+                </div>
+
+                <h2 id="quickFactsTitle">
+                    School Profile
+                </h2>
+
+                <p id="quickFactsSubtitle">
+                    Small facts. Big impact.
+                </p>
+
+            </div>
+
+
+            <div class="quick-facts-grid">
+
+                <div class="quick-fact-card">
+
+                    <div
+                        class="quick-fact-icon"
+                        id="factIcon1"
+                    >
+                        💡
+                    </div>
+
+                    <div
+                        class="quick-fact-value"
+                        id="factValue1"
+                    >
+                        90%
+                    </div>
+
+                    <div
+                        class="quick-fact-text"
+                        id="factText1"
+                    >
+                        LED bulbs can use up to 90% less energy
+                        than incandescent bulbs.
+                    </div>
+
+                </div>
+
+
+                <div class="quick-fact-card">
+
+                    <div
+                        class="quick-fact-icon"
+                        id="factIcon2"
+                    >
+                        ♻️
+                    </div>
+
+                    <div
+                        class="quick-fact-value"
+                        id="factValue2"
+                    >
+                        62M
+                    </div>
+
+                    <div
+                        class="quick-fact-text"
+                        id="factText2"
+                    >
+                        Around 62 million tonnes of e-waste
+                        were generated globally in 2022.
+                    </div>
+
+                </div>
+
+
+                <div class="quick-fact-card">
+
+                    <div
+                        class="quick-fact-icon"
+                        id="factIcon3"
+                    >
+                        🔄
+                    </div>
+
+                    <div
+                        class="quick-fact-value"
+                        id="factValue3"
+                    >
+                        22.3%
+                    </div>
+
+                    <div
+                        class="quick-fact-text"
+                        id="factText3"
+                    >
+                        Only 22.3% of 2022 global e-waste
+                        was formally collected and recycled.
+                    </div>
+
+                </div>
+
+
+                <div class="quick-fact-card">
+
+                    <div
+                        class="quick-fact-icon"
+                        id="factIcon4"
+                    >
+                        🌡️
+                    </div>
+
+                    <div
+                        class="quick-fact-value"
+                        id="factValue4"
+                    >
+                        1.5°C
+                    </div>
+
+                    <div
+                        class="quick-fact-text"
+                        id="factText4"
+                    >
+                        The Paris Agreement aims to limit
+                        warming to well below 2°C and pursue
+                        efforts toward 1.5°C.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="quick-facts-source"
+                id="quickFactsSource"
+            >
+                Sources: U.S. DOE • Global E-waste Monitor • UNFCCC
+            </div>
+            <!-- RESULT / CONCLUSION FACTS -->
+<div class="quick-fact-set" id="factsResult" style="display:none;">
+    <div class="quick-fact-card">
+        <span class="quick-fact-icon">🌱</span>
+        <div>
+            <strong>Every kg counts</strong>
+            <p>Even small reductions in energy use, travel, fuel and waste can lower the school's total carbon footprint.</p>
+        </div>
+    </div>
+
+    <div class="quick-fact-card">
+        <span class="quick-fact-icon">⚡</span>
+        <div>
+            <strong>Energy is a key area</strong>
+            <p>Using electricity efficiently and increasing solar energy can reduce emissions from the school's energy use.</p>
+        </div>
+    </div>
+
+    <div class="quick-fact-card">
+        <span class="quick-fact-icon">🚌</span>
+        <div>
+            <strong>Smarter travel helps</strong>
+            <p>Shared and public transport, walking and cycling can help reduce transportation-related emissions.</p>
+        </div>
+    </div>
+
+    <div class="quick-fact-card">
+        <span class="quick-fact-icon">📊</span>
+        <div>
+            <strong>Measure → Understand → Improve</strong>
+            <p>Your carbon-footprint result helps identify areas where your school can make future improvements.</p>
+        </div>
+    </div>
+</div>
+        </aside>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <div class="school-footer">
+        Made By Students Of Class 10th
+    </div>
+
+
+    <script src="school.js"></script>
+
+</body>
+</html>

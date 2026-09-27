@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="d79fb0a61fbd53ce53c9c4492fc59e8f-removebg-preview.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tips - Footprint Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .tips-container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 30px;
+        }
+        .tips-header {
+            text-align: center;
+            background: linear-gradient(135deg, #43a047 0%, #66bb6a 100%);
+            padding: 40px;
+            border-radius: 15px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px rgba(67, 160, 71, 0.3);
+        }
+        .tips-category {
+            margin-bottom: 30px;
+            background-color: #e8f5e9;
+            border: 4px solid #2d5016;
+            border-radius: 15px;
+            padding: 25px;
+        }
+        .tips-category h2 {
+            color: #1b5e20;
+            font-size: 28px;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .tip-item {
+            background-color: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 5px solid #43a047;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .tip-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 4px 12px rgba(67, 160, 71, 0.2);
+        }
+        .tip-item h3 {
+            color: #2e7d32;
+            margin-top: 0;
+            font-size: 20px;
+        }
+        .tip-item p {
+            color: #33691e;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+        .impact-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .high-impact {
+            background-color: #c8e6c9;
+            color: #1b5e20;
+        }
+        .medium-impact {
+            background-color: #fff9c4;
+            color: #f57f17;
+        }
+        .easy-win {
+            background-color: #b3e5fc;
+            color: #01579b;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .action-button {
+            display: inline-block;
+            background-color: #43a047;
+            color: white;
+            padding: 15px 35px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 18px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .action-button:hover {
+            background-color: #2e7d32;
+            transform: translateY(-3px);
+        }
+        .action-button.secondary {
+            background-color: #2e7d32;
+        }
+        .action-button.secondary:hover {
+            background-color: #1b5e20;
+        }
+    </style>
+</head>
+<body>
+   <nav class="navbar">
+    <div class="nav-brand">
+        <img
+            src="d79fb0a61fbd53ce53c9c4492fc59e8f-removebg-preview.png"
+            alt="KVS Logo"
+            class="kvlogo"
+        >
+
+        <div class="school-info">
+            <span class="school-name">PM SHRI K.V. Andrews Ganj</span>
+            <span class="school-location">New Delhi - 110024</span>
+        </div>
+    </div>
+
+    <ul class="navlinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="household.html">Household Calculator</a></li>
+        <li><a href="school.html">School Calculator</a></li>
+        <li><a href="tips.html" class="active">Tips</a></li>
+        <li><a href="resources.html">Resources</a></li>
+    </ul>
+</nav>
+
+    <div class="tips-container">
+        <div class="tips-header">
+            <h1 style="margin: 0; font-size: 36px;">🌱 Tips to Reduce Your Carbon Footprint</h1>
+            <p style="margin-top: 15px; font-size: 18px;">Small changes can make a big difference! Here are practical ways to reduce your emissions.</p>
+        </div>
+
+        <!-- Electricity Tips -->
+        <div class="tips-category">
+            <h2>⚡ Electricity & Energy</h2>
+            
+            <div class="tip-item">
+                <h3>💡 Switch to LED Bulbs</h3>
+                <p>Replace all incandescent bulbs with LED bulbs. They use 75% less energy and last 25 times longer. A typical household can save hundreds on electricity bills annually while reducing carbon emissions significantly.</p>
+                <span class="impact-badge easy-win">Easy Win • Save up to 200 kg CO2/year</span>
+            </div>
+
+            <div class="tip-item">
+                <h3>🔌 Unplug Electronics When Not in Use</h3>
+                <p>Many devices draw power even when turned off (phantom load). Unplug chargers, TVs, computers, and kitchen appliances when not in use, or use power strips to easily switch off multiple devices at once.</p>
+                <span class="impact-badge easy-win">Easy Win • Save up to 100 kg CO2/year</span>
+            </div>
+
+            <div class="tip-item">
+                <h3>⭐ Use Energy-Efficient Appliances</h3>
+                <p>When replacing appliances, choose those with 5-star BEE (Bureau of Energy Efficiency) ratings. They consume significantly less electricity. Refrigerators, air conditioners, and washing machines with high ratings can cut energy use by 30-50%.</p>
+                <span class="impact-badge high-impact">High Impact • Save up to 500 kg CO2/year</span>
+            </div>
+
+            <div class="tip-item">
+                <h3>☀️ Install Solar Panels</h3>
+                <p>If possible, install rooftop solar panels to generate clean, renewable energy for your home. Government subsidies and net metering make solar power increasingly affordable. A 3kW system can offset most household electricity needs.</p>
+                <span class="impact-badge high-impact">High Impact • Save up to 2000 kg CO2/year</span>
+            </div>
+
+            <div class="tip-item">
+                <h3>🌤️ Use Natural Light and Ventilation</h3>
+                <p>Open curtains and blinds during the day to maximize natural light. Use ceiling fans instead of air conditioning when possible. Position furniture to allow better air circulation and keep your home cooler naturally.</p>
+                <span class="impact-badge medium-impact">Medium Impact • Save up to 300 kg CO2/year</span>
+            </div>
+
+            <div class="tip-item">
+                <h3>❄️ Optimize Air Conditioning Usage</h3>
+                <p>Set your AC to 24-25°C instead of lower temperatures. Each degree higher can save 3-5% energy. Clean filters regularly, ensure proper insulation, and use timers to avoid running AC unnecessarily overnight.</p>
+                <span class="impact-badge medium-impact">Medium Impact • Save up to 400 kg CO2/year</span>
+            </div>
+        </div>
+
+        <!-- Transportation Tips -->
+        <div class="tips-category">
+            <h2>🚗 Transportation</h2>
+            
+            <div class="tip-item">
+                <h3>🚌 Use Public Transportation</h3>
+                <p>Buses, trains, and metros produce far fewer emissions per passenger than private vehicles. A single person switching from car to public transport can reduce CO2 emissions by over 1 tonne annually. Plus, you save on fuel and parking costs!</p>
+                <span class="impact-badge high-impact">High Impact • Save up to 1000 kg CO2/year</span>
+            </div>
+
+            <div class="tip-item">
+                <h3>🚴 Carpool, Bike, or Walk</h3>
+                <p>Share rides with colleagues or neighbors for daily commutes. For shorter distances, cycle or walk - it reduces emissions and improves your health! Many cities now have bike-sharing programs and dedicated cycling lanes.</p>
+                <span class="impact-badge high-impact">High Impact • Save up to 800 kg CO2/year</span>
+            </div>
+
+            <div class="tip-item">
+                <h3>🔧 Maintain Your Vehicle Properly</h3>
+                <p>Regular servicing, proper tire pressure (check monthly), and timely oil changes improve fuel efficiency by 10-15%. Replace air filters as recommended, and fix any engine issues promptly to ensure optimal performance.</p>
+                <span class="impact-badge medium-impact">Medium Impact • Save up to 200 kg CO2/year</span>
+            </div>
+
+            <div class="tip-item">
+                <h3>✈️ Reduce Air Travel</h3>
+                <p>Air travel has a high carbon footprint - a single international flight can emit 1-2 tonnes of CO2 per person. Consider video calls instead of business trips, choose trains for shorter distances, and when flying is necessary, choose direct flights and economy class.</p>
+                <span class="impact-badge high-impact">High Impact • Save up to 1500 kg CO2/trip</span>
+            </div>
+
+            <div class="tip-item">
+                <h3>🚦 Drive Efficiently</h3>
+                <p>Avoid harsh acceleration and braking. Maintain steady speeds between 50-80 km/h for optimal fuel efficiency. Remove unnecessary weight from your vehicle, close windows at high speeds, and plan routes to avoid traffic congestion.</p>
+                <span class="impact-badge medium-impact">Medium Impact • Save up to 400 kg CO2/year</span>
+            </div>
+
+            <div class="tip-item">
+                <h3>⚡ Consider Electric Vehicles</h3>
+                <p>If buying a new vehicle, consider electric or hybrid options. EVs produce zero direct emissions and are cheaper to run. With government incentives and growing charging infrastructure, EVs are becoming increasingly practical in India.</p>
+                <span class="impact-badge high-impact">High Impact • Save up to 1500 kg CO2/year</span>
+            </div>
+        </div>
+
+        <!-- Food & Diet Tips -->
+        <div class="tips-category">
+            <h2>🍽️ Food & Diet</h2>
+            
+            <div class="tip-item">
+                <h3>🥗 Reduce Meat Consumption</h3>
+                <p>Livestock farming produces significant greenhouse gases, especially beef and lamb. Try "Meatless Mondays" or reduce meat portions. Even reducing meat consumption by 50% can significantly lower your footprint while improving health.</p>
+                <span class="impact-badge high-impact">High Impact • Save up to 500 kg CO2/year</span>
+            </div>
+
+            <div class="tip-item">
+                <h3>🏪 Buy Local and Seasonal Produce</h3>
+                <p>Local food travels shorter distances, reducing transportation emissions. Seasonal produce requires less energy to grow and store. Shop at local markets and farmers' markets to support local agriculture and reduce your carbon footprint.</p>
+                <span class="impact-badge medium-impact">Medium Impact • Save up to 200 kg CO2/year</span>
+            </div>
+
+            <div class="tip-item">
+                <h3>🗑️ Reduce Food Waste</h3>
+                <p>Plan meals, make shopping lists, store food properly, and compost scraps. About 40% of food is wasted globally, contributing to emissions from production and decomposition. Use leftovers creatively and freeze excess food for later use.</p>
+                <span class="impact-badge medium-impact">Medium Impact • Save up to 300 kg CO2/year</span>
+            </div>
+
+            <div class="tip-item">
+                <h3>🌱 Grow Your Own Food</h3>
+                <p>Start a kitchen garden with vegetables, herbs, and leafy greens. Even a small balcony garden can provide fresh produce with zero transportation emissions. It's therapeutic, educational, and ensures you know exactly what's in your food.</p>
+                <span class="impact-badge easy-win">Easy Win • Plus health benefits!</span>
+            </div>
+
+            <div class="tip-item">
+                <h3>💧 Avoid Bottled Water</h3>
+                <p>Plastic bottle production and transportation create significant emissions. Use water filters and reusable bottles instead. A single reusable bottle can replace hundreds of disposable ones and save money in the long run.</p>
+                <span class="impact-badge easy-win">Easy Win • Save up to 150 kg CO2/year</span>
+            </div>
+
+            <div class="tip-item">
+                <h3>🥡 Choose Minimal Packaging</h3>
+                <p>Buy products with less packaging or in bulk. Bring your own bags and containers when shopping. Packaging accounts for significant emissions in food production and contributes to plastic pollution.</p>
+                <span class="impact-badge medium-impact">Medium Impact • Reduces waste significantly</span>
+            </div>
+        </div>
+
+        <!-- Home & Lifestyle Tips -->
+        <div class="tips-category">
+            <h2>🏠 Home & Lifestyle</h2>
+            
+            <div class="tip-item">
+                <h3>🔥 Use LPG Efficiently</h3>
+                <p>Cover pots while cooking to reduce cooking time by 30%. Use pressure cookers for faster cooking. Ensure blue flames (proper combustion) by cleaning burners regularly. Match pot size to burner size for maximum efficiency.</p>
+                <span class="impact-badge easy-win">Easy Win • Save up to 150 kg CO2/year</span>
+            </div>
+
+            <div class="tip-item">
+                <h3>♻️ Reduce, Reuse, Recycle</h3>
+                <p>Minimize single-use plastics by carrying reusable bags, bottles, and containers. Reuse containers for storage. Properly segregate waste and recycle paper, glass, plastic, and metals. Composting organic waste reduces methane emissions from landfills.</p>
+                <span class="impact-badge medium-impact">Medium Impact • Save up to 250 kg CO2/year</span>
+            </div>
+
+            <div class="tip-item">
+                <h3>💧 Use Water Wisely</h3>
+                <p>Heating water requires significant energy. Take shorter showers (5-7 minutes), fix leaks promptly, and use cold water for washing clothes when possible. Install low-flow showerheads and faucet aerators to reduce water and energy consumption.</p>
+                <span class="impact-badge medium-impact">Medium Impact • Save up to 200 kg CO2/year</span>
+            </div>
+
+            <div class="tip-item">
+                <h3>🌳 Plant Trees and Maintain Gardens</h3>
+                <p>Trees absorb CO2 from the atmosphere - one mature tree absorbs about 22 kg annually. Plant native species in your community, maintain indoor plants for air quality, or support afforestation programs. Green spaces also reduce urban heat islands.</p>
+                <span class="impact-badge high-impact">High Impact • 1 tree = 22 kg CO2/year absorbed</span>
+            </div>
+
+            <div class="tip-item">
+                <h3>👕 Buy Less, Choose Quality</h3>
+                <p>Every product has a carbon footprint from manufacturing, packaging, and shipping. Buy durable items that last longer. Consider second-hand shopping for clothes and furniture. Fast fashion is a major contributor to emissions and waste.</p>
+                <span class="impact-badge medium-impact">Medium Impact • Varies by consumption</span>
+            </div>
+
+            <div class="tip-item">
+                <h3>🌡️ Improve Home Insulation</h3>
+                <p>Proper insulation reduces heating and cooling needs. Seal gaps around doors and windows, use weather stripping, and consider thermal curtains. Well-insulated homes can reduce energy consumption by 20-30% for temperature control.</p>
+                <span class="impact-badge high-impact">High Impact • Save up to 600 kg CO2/year</span>
+            </div>
+
+            <div class="tip-item">
+                <h3>📱 Reduce Digital Carbon Footprint</h3>
+                <p>Data centers consume enormous energy. Delete old emails and files, stream at lower quality when possible, unsubscribe from unwanted emails, and switch off devices completely instead of standby mode. Every GB of data stored has an environmental cost.</p>
+                <span class="impact-badge easy-win">Easy Win • Every action counts</span>
+            </div>
+        </div>
+
+        <!-- Additional Quick Tips -->
+        <div class="tips-category">
+            <h2>⚡ Quick Daily Habits</h2>
+            
+            <div class="tip-item">
+                <h3>✓ 10 Simple Daily Actions</h3>
+                <ul style="color: #33691e; line-height: 2; margin: 10px 0 10px 20px;">
+                    <li>Turn off lights when leaving a room</li>
+                    <li>Use stairs instead of elevators when possible</li>
+                    <li>Carry a reusable water bottle and shopping bag</li>
+                    <li>Print only when necessary, use both sides of paper</li>
+                    <li>Dry clothes naturally instead of using a dryer</li>
+                    <li>Take shorter showers (aim for under 10 minutes)</li>
+                    <li>Combine errands into one trip to reduce driving</li>
+                    <li>Choose products with minimal packaging</li>
+                    <li>Repair items instead of replacing them immediately</li>
+                    <li>Share climate tips with friends and family</li>
+                </ul>
+                <span class="impact-badge easy-win">Small habits, Big impact over time!</span>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="tips-category" style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); text-align: center; border: 4px solid #43a047;">
+            <h2 style="justify-content: center;">💚 Start Your Journey Today</h2>
+            <p style="font-size: 18px; color: #2e7d32; margin: 20px 0;">Remember: You don't have to do everything at once. Start with one or two tips that feel easiest for you and gradually adopt more sustainable habits. Every small action contributes to a healthier planet!</p>
+            <p style="font-size: 16px; color: #2e7d32; margin: 20px 0; font-weight: bold;">"The best time to plant a tree was 20 years ago. The second best time is now."</p>
+            <div class="action-buttons">
+                <a href="household.html" class="action-button">Calculate Your Footprint</a>
+                <a href="resources.html" class="action-button secondary">Explore Resources</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

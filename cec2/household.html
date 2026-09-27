@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="d79fb0a61fbd53ce53c9c4492fc59e8f-removebg-preview.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Footprint Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+   <nav class="navbar">
+    <div class="nav-brand">
+        <img
+            src="d79fb0a61fbd53ce53c9c4492fc59e8f-removebg-preview.png"
+            alt="KVS Logo"
+            class="kvlogo"
+        >
+
+        <div class="school-info">
+            <span class="school-name">PM SHRI K.V. Andrews Ganj</span>
+            <span class="school-location">New Delhi - 110024</span>
+        </div>
+    </div>
+
+    <ul class="navlinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="household.html" class="active">Household Calculator</a></li>
+        <li><a href="school.html">School Calculator</a></li>
+        <li><a href="tips.html">Tips</a></li>
+        <li><a href="resources.html">Resources</a></li>
+    </ul>
+</nav>
+    <!-- ISA Infinite Image Slider -->
+    <div class="isa-slider">
+        <h2 class="slider-title">🌱 Mission LiFE Initiatives</h2>
+        
+        <!-- Navigation Arrows -->
+        <button class="slider-nav prev" onclick="manualScroll('prev')">‹</button>
+        <button class="slider-nav next" onclick="manualScroll('next')">›</button>
+        
+        <div class="isa-track" id="isaTrack">
+            <a href="https://missionlife-moefcc.nic.in/sup-index.php" target="_blank"><img src="cropped_1.png" alt="ISA"></a>
+            <a href="https://missionlife-moefcc.nic.in/reduce-e-waste-index.php" target="_blank"><img src="cropped_2.png" alt="ISA"></a>
+            <a href="https://missionlife-moefcc.nic.in/ahls-index.php" target="_blank"><img src="cropped_3.png" alt="ISA"></a>
+            <a href="https://missionlife-moefcc.nic.in/save-water-index.php" target="_blank"><img src="cropped_4.png" alt="ISA"></a>
+            <a href="https://missionlife-moefcc.nic.in/asfs-index.php" target="_blank"><img src="cropped_5.png" alt="ISA"></a>
+            <a href="https://missionlife-moefcc.nic.in/save-energy-index.php" target="_blank"><img src="cropped_6.png" alt="ISA"></a>
+            <a href="https://missionlife-moefcc.nic.in/reduce-waste-index.php" target="_blank"><img src="cropped_7.png" alt="ISA"></a>
+
+            <!-- Duplicate for Infinite Loop -->
+            <a href="https://missionlife-moefcc.nic.in/sup-index.php" target="_blank"><img src="cropped_1.png" alt="ISA"></a>
+            <a href="https://missionlife-moefcc.nic.in/reduce-e-waste-index.php" target="_blank"><img src="cropped_2.png" alt="ISA"></a>
+            <a href="https://missionlife-moefcc.nic.in/ahls-index.php" target="_blank"><img src="cropped_3.png" alt="ISA"></a>
+            <a href="https://missionlife-moefcc.nic.in/save-water-index.php" target="_blank"><img src="cropped_4.png" alt="ISA"></a>
+            <a href="https://missionlife-moefcc.nic.in/asfs-index.php" target="_blank"><img src="cropped_5.png" alt="ISA"></a>
+            <a href="https://missionlife-moefcc.nic.in/save-energy-index.php" target="_blank"><img src="cropped_6.png" alt="ISA"></a>
+            <a href="https://missionlife-moefcc.nic.in/reduce-waste-index.php" target="_blank"><img src="cropped_7.png" alt="ISA"></a>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="slider-progress">
+            <div class="slider-progress-bar"></div>
+        </div>
+    </div>
+
+    <div class="headline">
+        <h1 class="hd1">Carbon Emission Calculator</h1>
+    </div>
+
+<!-- =========================================================
+     LIVE IMPACT TREE — HOUSEHOLD
+========================================================= -->
+
+<div class="live-tree-box household-live-tree">
+
+    <div class="live-tree-title">
+        🌍 Live Impact
+    </div>
+
+    <div id="householdLiveTreeEmoji" class="live-tree-emoji">
+        🌱
+    </div>
+
+    <div id="householdTreeCondition" class="live-tree-condition">
+        Start entering your household data
+    </div>
+
+    <div class="live-tree-emission">
+        <span>Current emissions</span>
+
+        <strong id="householdLiveCO2">
+            0.00 kg CO₂e
+        </strong>
+    </div>
+
+    <div class="live-tree-breakdown">
+
+        <div>
+            ⚡
+            <span>Electricity</span>
+            <strong id="householdLiveElectricity">
+                0.00 kg
+            </strong>
+        </div>
+
+        <div>
+            🚍
+            <span>Travel</span>
+            <strong id="householdLiveTransport">
+                0.00 kg
+            </strong>
+        </div>
+
+        <div>
+            🍽️
+            <span>Diet</span>
+            <strong id="householdLiveDiet">
+                0.00 kg
+            </strong>
+        </div>
+
+        <div>
+            ⛽
+            <span>Fuel</span>
+            <strong id="householdLiveFuel">
+                0.00 kg
+            </strong>
+        </div>
+    </div>
+</div>
+    
+    <!-- STEP 1 -->
+    <div class="Ecalc step" id="step1">
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: 20%;"></div>
+        </div>
+        
+        <img class="elecLogo" src="household.png" alt="Household">
+        <h2 class="hd2">👥 Number of People in Household</h2>
+        
+        <label class="textx"><span class="bt">•</span>Enter Number of Members:</label>
+        <input type="number" id="peopleCount" placeholder="e.g. 4" min="1">
+        
+        <div class="button-container">
+            <button id="nextBtn1" onclick="nextStep(2)">Next →</button>
+        </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="Ecalc step" id="step2" style="display:none;">
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: 40%;"></div>
+        </div>
+        
+        <img class="elecLogo" src="power.png" alt="Electricity">
+        <h2 class="hd2">⚡ Electricity Usage</h2>
+        
+        <label class="textx"><span class="bt">•</span>Electricity Usage (kWh Monthly):</label>
+        <input type="number" id="electricityUsage" placeholder="e.g. 250" min="0">
+        
+        <label class="textx"><span class="bt">•</span>Grid Factor (0.82 for India):</label>
+        <input type="number" id="gridFactor" value="0.82" step="0.01" min="0">
+        
+        <label class="textx"><span class="bt">•</span>Solar Power Generated (kWh Monthly):</label>
+        <input type="number" id="solarPanel" placeholder="e.g. 50" min="0">
+        
+        <div class="button-container">
+            <button class="backBtn" onclick="prevStep(1)">← Back</button>
+            <button id="nextBtn1" onclick="nextStep(3)">Next →</button>
+        </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="Ecalc step" id="step3" style="display:none;">
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: 60%;"></div>
+        </div>
+        
+        <img class="elecLogo" src="travel.png" alt="Travel">
+        <h2 class="hd2">✈️ Travel</h2>
+        
+        <label class="textx"><span class="bt">•</span>Air Travel (Km/Year):</label>
+        <input type="number" id="airTravel" placeholder="e.g. 5000" min="0">
+        
+        <label class="textx"><span class="bt">•</span>Rail Travel (Km/Year):</label>
+        <input type="number" id="railTravel" placeholder="e.g. 2000" min="0">
+        
+        <label class="textx"><span class="bt">•</span>Road Travel (Km/Month):</label>
+        <input type="number" id="roadTravel" placeholder="e.g. 500" min="0">
+        
+        <div class="button-container">
+            <button class="backBtn" onclick="prevStep(2)">← Back</button>
+            <button id="nextBtn1" onclick="nextStep(4)">Next →</button>
+        </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="Ecalc step" id="step4" style="display:none;">
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: 80%;"></div>
+        </div>
+        
+        <img class="elecLogo" src="diet.png" alt="Diet">
+        <h2 class="hd2">🍽️ Diet Type</h2>
+        
+        <label class="textx"><span class="bt">•</span>Select Your Diet Type:</label>
+        <select id="dietType">
+            <option value="">Select your diet</option>
+            <option value="veg">🥗 Vegetarian</option>
+            <option value="nonveg">🍖 Non-Vegetarian</option>
+            <option value="vegan">🌱 Vegan</option>
+        </select>
+        
+        <div class="button-container">
+            <button class="backBtn" onclick="prevStep(3)">← Back</button>
+            <button id="nextBtn1" onclick="nextStep(5)">Next →</button>
+        </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="Ecalc step" id="step5" style="display:none;">
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: 100%;"></div>
+        </div>
+        
+        <img class="elecLogo" src="fuel.png" alt="Fuel">
+        <h2 class="hd2">⛽ Fuel Usage</h2>
+        
+        <label class="textx"><span class="bt">•</span>Petrol (L/Month):</label>
+        <input type="number" placeholder="e.g. 40" id="petrol" min="0">
+        
+        <label class="textx"><span class="bt">•</span>Diesel (L/Month):</label>
+        <input type="number" placeholder="e.g. 30" id="diesel" min="0">
+        
+        <label class="textx"><span class="bt">•</span>CNG (Kg/Month):</label>
+        <input type="number" placeholder="e.g. 20" id="cng" min="0">
+        
+        <label class="textx"><span class="bt">•</span>LPG (Kg/Month):</label>
+        <input type="number" placeholder="e.g. 15" id="lpg" min="0">
+        
+        <label class="textx"><span class="bt">•</span>Coal (Kg/Month):</label>
+        <input type="number" placeholder="e.g. 10" id="coal" min="0">
+        
+        <label class="textx"><span class="bt">•</span>Coke (Kg/Month):</label>
+        <input type="number" placeholder="e.g. 5" id="coke" min="0">
+        
+        <div class="button-container">
+            <button class="backBtn" onclick="prevStep(4)">← Back</button>
+            <button id="nextBtn1" onclick="calculate()">Calculate 🌍</button>
+        </div>
+
+        <div id="result"></div>
+    </div>
+    
+    <div class="co2-animation">
+        <div class="co2"><img src="3300958-removebg-preview.png" class="co2img"></div>
+        <div class="co2"><img src="3300958-removebg-preview.png" class="co2img"></div>
+        <div class="co2"><img src="3300958-removebg-preview.png" class="co2img"></div>
+        <div class="co2"><img src="3300958-removebg-preview.png" class="co2img"></div>
+        <div class="co2"><img src="3300958-removebg-preview.png" class="co2img"></div>
+        <div class="co2"><img src="3300958-removebg-preview.png" class="co2img"></div>
+        <div class="co2"><img src="3300958-removebg-preview.png" class="co2img"></div>
+        <div class="co2"><img src="3300958-removebg-preview.png" class="co2img"></div>
+    </div>
+    <!-- Made By Credit -->
+    <div class="made-by-credit" onclick="showCreditPopup()">
+        Made By Students Of Class 10th
+    </div>
+
+    <!-- Credit Popup Modal -->
+    <div class="credit-popup" id="creditPopup" onclick="closeCreditPopup(event)">
+        <div class="credit-popup-content" onclick="event.stopPropagation()">
+            <h2>🌟 Project Team 🌟</h2>
+            <div class="lead-name">DEBANKA JYOTI MOITRA</div>
+            <div class="lead-name">ATHARV SHARMA</div>
+            <div class="team-member">SAHDEV JANGIR</div>
+            <div class="team-member">ANSHIKA GUPTA</div>
+            <div class="team-member">KAPIL SWAROOP</div>
+            <div class="class-info">Class 10th</div>
+            <button class="close-popup" onclick="closeCreditPopup(event)">Close</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
