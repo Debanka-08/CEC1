@@ -226,6 +226,7 @@ if (slider) {
         }
     });
 }
+
 // Credit Popup Functions
 function showCreditPopup() {
     document.getElementById('creditPopup').classList.add('show');
@@ -235,10 +236,6 @@ function closeCreditPopup(event) {
     event.stopPropagation();
     document.getElementById('creditPopup').classList.remove('show');
 }
-
-
-
-
 
 const themeButton = document.getElementById("themeToggle");
 
@@ -259,7 +256,6 @@ updateThemeButton();
 
 if (themeButton) {
     themeButton.addEventListener("click", function () {
-
         document.body.classList.toggle("dark-mode");
 
         localStorage.setItem(
@@ -279,9 +275,7 @@ if (themeButton) {
 ========================================================= */
 
 (function () {
-
     function getHouseholdValue(id) {
-
         const element =
             document.getElementById(id);
 
@@ -299,9 +293,7 @@ if (themeButton) {
         return Math.max(0, value);
     }
 
-
     function updateHouseholdLiveTree() {
-
         /* =================================================
            ELECTRICITY
         ================================================= */
@@ -323,7 +315,6 @@ if (themeButton) {
             gridFactor *
             12;
 
-
         /* =================================================
            TRANSPORT
         ================================================= */
@@ -341,7 +332,6 @@ if (themeButton) {
             (airTravel * 0.255) +
             (railTravel * 0.041) +
             (roadTravel * 0.171 * 12);
-
 
         /* =================================================
            DIET
@@ -361,18 +351,12 @@ if (themeButton) {
         let diet = 0;
 
         if (dietType === "veg") {
-
             diet = 1500 * people;
-
         } else if (dietType === "nonveg") {
-
             diet = 2500 * people;
-
         } else if (dietType === "vegan") {
-
             diet = 1200 * people;
         }
-
 
         /* =================================================
            FUEL
@@ -386,7 +370,6 @@ if (themeButton) {
             (getHouseholdValue("coal") * 2.42 * 12) +
             (getHouseholdValue("coke") * 3.43 * 12);
 
-
         /* =================================================
            TOTAL
         ================================================= */
@@ -396,7 +379,6 @@ if (themeButton) {
             transport +
             diet +
             fuel;
-
 
         /* =================================================
            DISPLAY VALUES
@@ -427,46 +409,35 @@ if (themeButton) {
                 "householdLiveFuel"
             );
 
-
         if (co2) {
-
             co2.textContent =
                 total.toFixed(2) +
                 " kg CO₂e";
         }
 
-
         if (electricityDisplay) {
-
             electricityDisplay.textContent =
                 electricity.toFixed(2) +
                 " kg";
         }
 
-
         if (transportDisplay) {
-
             transportDisplay.textContent =
                 transport.toFixed(2) +
                 " kg";
         }
 
-
         if (dietDisplay) {
-
             dietDisplay.textContent =
                 diet.toFixed(2) +
                 " kg";
         }
 
-
         if (fuelDisplay) {
-
             fuelDisplay.textContent =
                 fuel.toFixed(2) +
                 " kg";
         }
-
 
         /* =================================================
            TREE
@@ -487,11 +458,9 @@ if (themeButton) {
                 "householdTreeCondition"
             );
 
-
         if (!box || !tree || !condition) {
             return;
         }
-
 
         box.classList.remove(
             "tree-healthy",
@@ -500,13 +469,11 @@ if (themeButton) {
             "tree-danger"
         );
 
-
         /* =================================================
            TREE HEALTH
         ================================================= */
 
         if (total === 0) {
-
             tree.textContent = "🌱";
 
             condition.textContent =
@@ -515,11 +482,7 @@ if (themeButton) {
             box.classList.add(
                 "tree-healthy"
             );
-
-        }
-
-        else if (total < 5000) {
-
+        } else if (total < 5000) {
             tree.textContent = "🌳";
 
             condition.textContent =
@@ -528,11 +491,7 @@ if (themeButton) {
             box.classList.add(
                 "tree-healthy"
             );
-
-        }
-
-        else if (total < 12000) {
-
+        } else if (total < 12000) {
             tree.textContent = "🌲";
 
             condition.textContent =
@@ -541,11 +500,7 @@ if (themeButton) {
             box.classList.add(
                 "tree-moderate"
             );
-
-        }
-
-        else if (total < 20000) {
-
+        } else if (total < 20000) {
             tree.textContent = "🍂";
 
             condition.textContent =
@@ -554,11 +509,7 @@ if (themeButton) {
             box.classList.add(
                 "tree-warning"
             );
-
-        }
-
-        else {
-
+        } else {
             tree.textContent = "🥀";
 
             condition.textContent =
@@ -570,7 +521,6 @@ if (themeButton) {
         }
     }
 
-
     /* =====================================================
        REAL-TIME UPDATES
     ===================================================== */
@@ -578,16 +528,13 @@ if (themeButton) {
     document.addEventListener(
         "DOMContentLoaded",
         function () {
-
             const inputs =
                 document.querySelectorAll(
                     ".Ecalc input, .Ecalc select"
                 );
 
-
             inputs.forEach(
                 function (input) {
-
                     input.addEventListener(
                         "input",
                         updateHouseholdLiveTree
@@ -600,9 +547,7 @@ if (themeButton) {
                 }
             );
 
-
             updateHouseholdLiveTree();
         }
     );
-
 })();
