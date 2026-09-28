@@ -387,21 +387,57 @@ function drawBalanceGraph(){
 const w=canvas.clientWidth;
 const h=canvas.clientHeight;
 const max=Math.max(graphCanvasState.emissions,graphCanvasState.absorption,1);
-const left=95;
+const left=55;
 const right=35;
-const usable=w-left-right;
+const top=42;
+const bottom=55;
+const usableW=w-left-right;
+const usableH=h-top-bottom;
 const barH=38;
-const y1=h*.31;
-const y2=h*.57;
-drawLabel("EMISSIONS",20,y1+6,10,"#dca0a0");
-drawLabel("ABSORPTION",20,y2+6,10,"#9bd6af");
+const y1=top+usableH*.20;
+const y2=top+usableH*.57;
+const yAxisMax=Math.ceil(max/10)*10||10;
+const yTicks=5;
+ctx.save();
+ctx.strokeStyle="rgba(255,255,255,.28)";
+ctx.lineWidth=1;
+ctx.beginPath();
+ctx.moveTo(left,top);
+ctx.lineTo(left,h-bottom);
+ctx.lineTo(w-right,h-bottom);
+ctx.stroke();
+for(let i=0;i<=yTicks;i++){
+const value=(yAxisMax/yTicks)*(yTicks-i);
+const y=top+(usableH/yTicks)*i;
+ctx.strokeStyle="rgba(255,255,255,.08)";
+ctx.beginPath();
+ctx.moveTo(left,y);
+ctx.lineTo(w-right,y);
+ctx.stroke();
+drawLabel(formatNumber(value),8,y+4,9,"#91aaa1");
+}
+const barMax=Math.max(yAxisMax,1);
+drawLabel("EMISSIONS",left+8,y1-10,10,"#dca0a0");
+drawLabel("ABSORPTION",left+8,y2-10,10,"#9bd6af");
 ctx.fillStyle="rgba(223,102,102,.82)";
-ctx.fillRect(left,y1,usable*(graphCanvasState.emissions/max),barH);
+ctx.fillRect(left,y1,usableW*(graphCanvasState.emissions/barMax),barH);
 ctx.fillStyle="rgba(87,184,123,.82)";
-ctx.fillRect(left,y2,usable*(graphCanvasState.absorption/max),barH);
-drawLabel(`${formatNumber(graphCanvasState.emissions)} kt`,left+usable*(graphCanvasState.emissions/max)+8,y1+25,12,"#fff");
-drawLabel(`${formatNumber(graphCanvasState.absorption)} kt`,left+usable*(graphCanvasState.absorption/max)+8,y2+25,12,"#fff");
-drawLabel(`NET BALANCE: ${signed(graphCanvasState.net)} kt`,20,h-28,12,"#d9e9e3");
+ctx.fillRect(left,y2,usableW*(graphCanvasState.absorption/barMax),barH);
+drawLabel(`${formatNumber(graphCanvasState.emissions)} kt`,left+usableW*(graphCanvasState.emissions/barMax)+8,y1+25,12,"#fff");
+drawLabel(`${formatNumber(graphCanvasState.absorption)} kt`,left+usableW*(graphCanvasState.absorption/barMax)+8,y2+25,12,"#fff");
+const xMarks=["LOW","MID","HIGH"];
+for(let i=0;i<xMarks.length;i++){
+const x=left+(usableW/2)*i;
+ctx.strokeStyle="rgba(255,255,255,.18)";
+ctx.beginPath();
+ctx.moveTo(x,h-bottom);
+ctx.lineTo(x,h-bottom+6);
+ctx.stroke();
+drawLabel(xMarks[i],x-(i===1?12:9),h-bottom+20,9,"#91aaa1");
+}
+drawLabel("CARBON BALANCE SCALE",w/2-60,h-12,9,"#91aaa1");
+drawLabel(`NET BALANCE: ${signed(graphCanvasState.net)} kt`,left,h-28,12,"#d9e9e3");
+ctx.restore();
 }
 function drawSourceGraph(){
 const w=canvas.clientWidth;
