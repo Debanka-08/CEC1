@@ -1,2598 +1,671 @@
 /* =========================================================
    PLANETARY CARBON BALANCE SANDBOX
-   Complete corrected + upgraded JavaScript
-   Pure JavaScript / No libraries
+   Complete upgraded interactive model
    ========================================================= */
-/* =========================================================
-   CLIMATE VARIABLES
-   ========================================================= */
-const variables = [
-    /* HUMAN SOURCES */
-    {
-        id: "cars",
-        name: "Cars, trucks and buses",
-        icon: "🚗",
-        group: "human",
-        weight: 1.55,
-        defaultValue: 35
-    },
-    {
-        id: "airplanes",
-        name: "Airplanes and cargo ships",
-        icon: "✈️",
-        group: "human",
-        weight: 1.85,
-        defaultValue: 30
-    },
-    {
-        id: "power",
-        name: "Coal and gas power plants",
-        icon: "🏭",
-        group: "human",
-        weight: 2.60,
-        defaultValue: 30
-    },
-    {
-        id: "cement",
-        name: "Cement and steel factories",
-        icon: "🏗️",
-        group: "human",
-        weight: 1.90,
-        defaultValue: 25
-    },
-    {
-        id: "refineries",
-        name: "Oil refineries",
-        icon: "🛢️",
-        group: "human",
-        weight: 1.35,
-        defaultValue: 25
-    },
-    {
-        id: "landfills",
-        name: "Landfills and waste sites",
-        icon: "♻️",
-        group: "human",
-        weight: 0.95,
-        defaultValue: 20
-    },
-    {
-        id: "gas",
-        name: "Gas heaters and stoves",
-        icon: "🔥",
-        group: "human",
-        weight: 0.50,
-        defaultValue: 25
-    },
-    /* NATURAL SOURCES */
-    {
-        id: "animals",
-        name: "Animals and humans",
-        icon: "🐄",
-        group: "natural",
-        weight: 0.70,
-        defaultValue: 25
-    },
-    {
-        id: "volcanoes",
-        name: "Volcanoes and geothermal vents",
-        icon: "🌋",
-        group: "natural",
-        weight: 0.90,
-        defaultValue: 15
-    },
-    {
-        id: "wildfires",
-        name: "Wildfires",
-        icon: "🔥",
-        group: "natural",
-        weight: 1.25,
-        defaultValue: 15
-    },
-    {
-        id: "decay",
-        name: "Decaying plants and organisms",
-        icon: "🍂",
-        group: "natural",
-        weight: 0.60,
-        defaultValue: 25
-    },
-    /* NATURAL SINKS */
-    {
-        id: "forests",
-        name: "Trees and forests",
-        icon: "🌲",
-        group: "sink",
-        weight: 1.80,
-        defaultValue: 65
-    },
-    {
-        id: "oceans",
-        name: "Oceans and marine life",
-        icon: "🌊",
-        group: "sink",
-        weight: 1.55,
-        defaultValue: 65
-    },
-    {
-        id: "soils",
-        name: "Soils and peatlands",
-        icon: "🌱",
-        group: "sink",
-        weight: 1.20,
-        defaultValue: 60
-    }
+const variables=[
+{id:"cars",name:"Cars, trucks and buses",icon:"🚗",group:"human",weight:1.55,default:35},
+{id:"airplanes",name:"Airplanes and cargo ships",icon:"✈️",group:"human",weight:1.85,default:30},
+{id:"power",name:"Coal and gas power plants",icon:"🏭",group:"human",weight:2.60,default:30},
+{id:"cement",name:"Cement and steel factories",icon:"🏗️",group:"human",weight:1.90,default:25},
+{id:"refineries",name:"Oil refineries",icon:"🛢️",group:"human",weight:1.35,default:25},
+{id:"landfills",name:"Landfills and waste sites",icon:"♻️",group:"human",weight:.95,default:20},
+{id:"gas",name:"Gas heaters and stoves",icon:"🔥",group:"human",weight:.50,default:25},
+{id:"animals",name:"Animals and humans",icon:"🐄",group:"natural",weight:.70,default:25},
+{id:"volcanoes",name:"Volcanoes and geothermal vents",icon:"🌋",group:"natural",weight:.90,default:15},
+{id:"wildfires",name:"Wildfires",icon:"🔥",group:"natural",weight:1.25,default:15},
+{id:"decay",name:"Decaying plants and organisms",icon:"🍂",group:"natural",weight:.60,default:25},
+{id:"forests",name:"Trees and forests",icon:"🌲",group:"sink",weight:1.80,default:65},
+{id:"oceans",name:"Oceans and marine life",icon:"🌊",group:"sink",weight:1.55,default:65},
+{id:"soils",name:"Soils and peatlands",icon:"🌱",group:"sink",weight:1.20,default:60}
 ];
-/* =========================================================
-   DOM REFERENCES
-   ========================================================= */
-const humanControls =
-    document.getElementById("humanControls");
-const naturalControls =
-    document.getElementById("naturalControls");
-const sinkControls =
-    document.getElementById("sinkControls");
-const stage =
-    document.getElementById("environmentStage");
-const statusIcon =
-    document.getElementById("statusIcon");
-const statusLabel =
-    document.getElementById("statusLabel");
-const statusDescription =
-    document.getElementById("statusDescription");
-const telemetryStatus =
-    document.getElementById("telemetryStatus");
-const emissionsValue =
-    document.getElementById("emissionsValue");
-const absorptionValue =
-    document.getElementById("absorptionValue");
-const balanceValue =
-    document.getElementById("balanceValue");
-const liveClimateMessage =
-    document.getElementById("liveClimateMessage");
-const graphType =
-    document.getElementById("graphType");
-const graphDescription =
-    document.getElementById("graphDescription");
-const canvas =
-    document.getElementById("carbonChart");
-const ctx =
-    canvas.getContext("2d");
-/* INDICATORS */
-const airIndicator =
-    document.getElementById("airIndicator");
-const forestIndicator =
-    document.getElementById("forestIndicator");
-const oceanIndicator =
-    document.getElementById("oceanIndicator");
-const airQualityIndicator =
-    document.getElementById("airQualityIndicator");
-const soilIndicator =
-    document.getElementById("soilIndicator");
-const marineIndicator =
-    document.getElementById("marineIndicator");
-/* =========================================================
-   SAFETY CHECK
-   ========================================================= */
-if (!stage || !canvas) {
-    console.error(
-        "Planetary Carbon Sandbox: Required HTML elements were not found."
-    );
-}
-/* =========================================================
-   STATE
-   ========================================================= */
-let currentData = {
-    emissions: 0,
-    absorption: 0,
-    net: 0
+const humanControls=document.getElementById("humanControls");
+const naturalControls=document.getElementById("naturalControls");
+const sinkControls=document.getElementById("sinkControls");
+const stage=document.getElementById("environmentStage");
+const statusIcon=document.getElementById("statusIcon");
+const statusLabel=document.getElementById("statusLabel");
+const statusDescription=document.getElementById("statusDescription");
+const telemetryStatus=document.getElementById("telemetryStatus");
+const emissionsValue=document.getElementById("emissionsValue");
+const absorptionValue=document.getElementById("absorptionValue");
+const balanceValue=document.getElementById("balanceValue");
+const liveClimateMessage=document.getElementById("liveClimateMessage");
+const graphType=document.getElementById("graphType");
+const graphDescription=document.getElementById("graphDescription");
+const canvas=document.getElementById("carbonChart");
+const ctx=canvas.getContext("2d");
+const simulationYear=document.getElementById("simulationYear");
+const simulationStep=document.getElementById("simulationStep");
+const changeIndicator=document.getElementById("changeIndicator");
+const changeArrow=document.getElementById("changeArrow");
+const changeTitle=document.getElementById("changeTitle");
+const changeText=document.getElementById("changeText");
+const previousBalance=document.getElementById("previousBalance");
+const currentBalance=document.getElementById("currentBalance");
+const balanceDelta=document.getElementById("balanceDelta");
+const comparisonArrow=document.getElementById("comparisonArrow");
+const chartLiveValue=document.getElementById("chartLiveValue");
+const accessibilityLive=document.getElementById("accessibilityLive");
+const emissionsChange=document.getElementById("emissionsChange");
+const absorptionChange=document.getElementById("absorptionChange");
+const balanceChange=document.getElementById("balanceChange");
+const metricCards=[document.getElementById("emissionsCard"),document.getElementById("absorptionCard"),document.getElementById("balanceCard")];
+const indicatorElements={
+air:document.getElementById("airIndicator"),
+forest:document.getElementById("forestIndicator"),
+ocean:document.getElementById("oceanIndicator"),
+airQuality:document.getElementById("airQualityIndicator"),
+soil:document.getElementById("soilIndicator"),
+marine:document.getElementById("marineIndicator")
 };
-let history = [];
-let numberAnimationIds = [];
-let graphAnimationFrame = null;
-let sceneAnimationFrame = null;
-let lastReactionTime = 0;
-/* =========================================================
-   GRAPH ANIMATION STATE
-   ========================================================= */
-const graphVisual = {
-    emissions: 0,
-    absorption: 0,
-    net: 0,
-    sources: [],
-    sinks: [],
-    history: []
+const indicatorDetails={
+air:document.getElementById("airDetail"),
+forest:document.getElementById("forestDetail"),
+ocean:document.getElementById("oceanDetail"),
+airQuality:document.getElementById("airQualityDetail"),
+soil:document.getElementById("soilDetail"),
+marine:document.getElementById("marineDetail")
 };
-const graphTarget = {
-    emissions: 0,
-    absorption: 0,
-    net: 0,
-    sources: [],
-    sinks: [],
-    history: []
+let currentData={emissions:0,absorption:0,net:0};
+let previousData={emissions:0,absorption:0,net:0};
+let history=[];
+let numberAnimationIds=[];
+let graphAnimationFrame=null;
+let sceneAnimationFrame=null;
+let simulationTick=0;
+let simulationYearValue=2026;
+let lastChangedVariable=null;
+let lastInteractionTime=0;
+let graphVisual={emissions:0,absorption:0,net:0,sources:[],sinks:[],history:[]};
+function clamp(value,min=0,max=1){return Math.max(min,Math.min(max,value))}
+function lerp(a,b,t){return a+(b-a)*t}
+function getValue(id){const input=document.querySelector(`input[data-id="${id}"]`);return input?Number(input.value):0}
+function formatNumber(value){return Number(value).toFixed(1)}
+function signed(value){return `${value>0?"+":""}${formatNumber(value)}`}
+function createControls(){
+variables.forEach(variable=>{
+const wrapper=document.createElement("div");
+wrapper.className="control-item";
+wrapper.dataset.id=variable.id;
+wrapper.innerHTML=`<div class="control-label"><span class="control-name"><span>${variable.icon}</span>${variable.name}</span><span class="control-value" data-value-for="${variable.id}">${variable.default}%</span></div><div class="slider-row"><span class="slider-min">0</span><input type="range" min="0" max="100" value="${variable.default}" step="1" data-id="${variable.id}" aria-label="${variable.name}"><span class="slider-max">100</span></div>`;
+const target=variable.group==="human"?humanControls:variable.group==="natural"?naturalControls:sinkControls;
+target.appendChild(wrapper);
+const input=wrapper.querySelector("input");
+input.addEventListener("input",()=>{
+lastChangedVariable=variable;
+simulationTick++;
+updateValueBadge(variable.id,input.value);
+updateSliderVisual(input,variable.group);
+updateFactorStatus(wrapper,variable,input.value);
+updateModel(true);
+triggerFactorReaction(variable);
+});
+input.addEventListener("change",()=>announceCurrentState(variable));
+updateValueBadge(variable.id,variable.default);
+updateSliderVisual(input,variable.group);
+updateFactorStatus(wrapper,variable,variable.default);
+});
+}
+function getFactorState(variable,value){
+const v=Number(value);
+if(variable.group==="sink"){
+if(v>=70)return"good";
+if(v>=35)return"medium";
+return"bad";
+}
+if(v<=34)return"good";
+if(v<=69)return"medium";
+return"bad";
+}
+function updateFactorStatus(wrapper,variable,value){
+const state=getFactorState(variable,value);
+const colours={good:{border:"#3eaf6a",bg:"#f0faf3",badge:"#dff3e7"},medium:{border:"#d49b19",bg:"#fff9e8",badge:"#fff3d1"},bad:{border:"#d84747",bg:"#fff1f1",badge:"#ffe1e1"}};
+const c=colours[state];
+wrapper.style.borderLeft=`3px solid ${c.border}`;
+wrapper.style.background=c.bg;
+const badge=wrapper.querySelector(".control-value");
+badge.style.background=c.badge;
+badge.style.color=c.border;
+}
+function updateValueBadge(id,value){
+const badge=document.querySelector(`[data-value-for="${id}"]`);
+if(!badge)return;
+badge.textContent=`${value}%`;
+badge.style.transform="scale(1.08)";
+clearTimeout(badge._timer);
+badge._timer=setTimeout(()=>badge.style.transform="scale(1)",130);
+}
+function updateSliderVisual(input,group){
+const value=Number(input.value);
+let left,right;
+if(group==="sink"){left="#d84747";right="#42a866"}else{left="#42a866";right="#d84747"}
+const middle="#e0ad2f";
+input.style.background=`linear-gradient(90deg,${left} 0%,${middle} 48%,${right} 100%)`;
+input.style.setProperty("--value",`${value}%`);
+}
+function calculateModel(){
+let emissions=0;
+let absorption=0;
+variables.forEach(variable=>{
+const contribution=variable.weight*getValue(variable.id)/100*10;
+if(variable.group==="sink")absorption+=contribution;
+else emissions+=contribution;
+});
+return{emissions,absorption,net:emissions-absorption};
+}
+function calculateEnvironmentalStress(model){
+const netStress=clamp((model.net+80)/180);
+const industrial=clamp((getValue("power")*.32+getValue("cement")*.24+getValue("refineries")*.18+getValue("cars")*.12+getValue("airplanes")*.14)/100);
+const natural=clamp((getValue("animals")*.35+getValue("volcanoes")*.25+getValue("wildfires")*.25+getValue("decay")*.15)/100);
+const forestStress=clamp(.65-netValue("forests")*.55+netStress*.55+getValue("wildfires")*.18);
+const oceanStress=clamp(.2+netStress*.55+(100-getValue("oceans"))/100*.35);
+const soilStress=clamp(.2+netStress*.45+(100-getValue("soils"))/100*.35+getValue("landfills")/100*.15);
+const fireStress=clamp(getValue("wildfires")/100*.65+netStress*.5+(100-getValue("forests"))/100*.2);
+const airStress=clamp(netStress*.72+industrial*.38+natural*.12);
+return{netStress,industrialStress:industrial,naturalStress:natural,forestStress,oceanStress,soilStress,fireStress,airStress,overall:clamp(netStress*.55+industrial*.18+natural*.1+forestStress*.08+oceanStress*.09)};
+}
+function netValue(id){return getValue(id)/100}
+function updateEnvironmentVariables(model){
+const stress=calculateEnvironmentalStress(model);
+stage.style.setProperty("--stress",stress.overall);
+stage.style.setProperty("--air-stress",stress.airStress);
+stage.style.setProperty("--forest-stress",stress.forestStress);
+stage.style.setProperty("--ocean-stress",stress.oceanStress);
+stage.style.setProperty("--fire-stress",stress.fireStress);
+stage.style.setProperty("--industrial-stress",stress.industrialStress);
+stage.style.setProperty("--soil-stress",stress.soilStress);
+stage.style.setProperty("--natural-stress",stress.naturalStress);
+stage.style.setProperty("--net-stress",stress.netStress);
+}
+function animateNumber(element,start,end,duration=360){
+const id=Symbol();
+numberAnimationIds.push(id);
+const startTime=performance.now();
+function frame(now){
+if(!numberAnimationIds.includes(id))return;
+const progress=clamp((now-startTime)/duration);
+const eased=1-Math.pow(1-progress,3);
+element.textContent=formatNumber(lerp(start,end,eased));
+if(progress<1)requestAnimationFrame(frame);
+else{
+element.textContent=formatNumber(end);
+numberAnimationIds=numberAnimationIds.filter(x=>x!==id);
+}
+}
+requestAnimationFrame(frame);
+}
+function updateNumbers(model,changed){
+animateNumber(emissionsValue,currentData.emissions,model.emissions);
+animateNumber(absorptionValue,currentData.absorption,model.absorption);
+animateNumber(balanceValue,currentData.net,model.net);
+if(changed){
+const eDelta=model.emissions-currentData.emissions;
+const aDelta=model.absorption-currentData.absorption;
+const nDelta=model.net-currentData.net;
+emissionsChange.textContent=`${eDelta===0?"":signed(eDelta)} kt`;
+absorptionChange.textContent=`${aDelta===0?"":signed(aDelta)} kt`;
+balanceChange.textContent=`${nDelta===0?"":signed(nDelta)} kt`;
+flashMetric(metricCards[0]);
+flashMetric(metricCards[1]);
+flashMetric(metricCards[2]);
+}
+}
+function flashMetric(card){
+card.classList.remove("live-change");
+void card.offsetWidth;
+card.classList.add("live-change");
+}
+function getState(net){
+if(net<=15)return"stable";
+if(net<=100)return"warning";
+return"critical";
+}
+function updateState(model){
+const state=getState(model.net);
+stage.classList.remove("stable","warning","critical");
+stage.classList.add(state);
+if(state==="stable"){
+statusIcon.textContent="✓";
+statusLabel.textContent="STABLE";
+statusDescription.textContent="The carbon system is within a relatively balanced range.";
+telemetryStatus.textContent="✓ STABLE";
+telemetryStatus.className="telemetry-status stable-status";
+}else if(state==="warning"){
+statusIcon.textContent="⚠";
+statusLabel.textContent="WARNING";
+statusDescription.textContent="Carbon pressure is increasing and environmental systems are becoming stressed.";
+telemetryStatus.textContent="⚠ WARNING";
+telemetryStatus.className="telemetry-status warning-status";
+}else{
+statusIcon.textContent="✕";
+statusLabel.textContent="CRITICAL COLLAPSE";
+statusDescription.textContent="Very high net emissions are placing severe pressure on the simulated environment.";
+telemetryStatus.textContent="✕ CRITICAL";
+telemetryStatus.className="telemetry-status critical-status";
+}
+return state;
+}
+function getLevel(value,labels){
+const v=clamp(value);
+const index=Math.min(labels.length-1,Math.floor(v*labels.length));
+return labels[index];
+}
+function updateIndicators(model){
+const stress=calculateEnvironmentalStress(model);
+const sets={
+air:["Low","Moderate","Elevated","High","Extreme"],
+forest:["Healthy","Slight stress","Stressed","Damaged","Severely stressed"],
+ocean:["Healthy","Changing","Stressed","Acidifying","Severely stressed"],
+airQuality:["Clear","Slightly hazy","Hazy","Poor","Very poor"],
+soil:["Stable","Drying","Under pressure","Degraded","Severely degraded"],
+marine:["Active","Slightly affected","Under pressure","Declining","Severely affected"]
 };
-/* =========================================================
-   BASIC HELPERS
-   ========================================================= */
-function clamp(value, min = 0, max = 1) {
-    return Math.min(
-        max,
-        Math.max(min, value)
-    );
+const values={
+air:stress.airStress,
+forest:stress.forestStress,
+ocean:stress.oceanStress,
+airQuality:stress.airStress,
+soil:stress.soilStress,
+marine:stress.oceanStress
+};
+Object.keys(values).forEach(key=>{
+const newValue=getLevel(values[key],sets[key]);
+if(indicatorElements[key].textContent!==newValue){
+indicatorElements[key].textContent=newValue;
+indicatorElements[key].parentElement.parentElement.classList.remove("changed");
+void indicatorElements[key].parentElement.parentElement.offsetWidth;
+indicatorElements[key].parentElement.parentElement.classList.add("changed");
 }
-function lerp(start, end, amount) {
-    return start +
-        (end - start) * amount;
+const direction=values[key]>.58?"Pressure increasing":values[key]>.3?"Moderate change":"Relatively stable";
+indicatorDetails[key].textContent=direction;
+});
 }
-function getValue(id) {
-    const slider =
-        document.getElementById(
-            `slider-${id}`
-        );
-    return slider
-        ? Number(slider.value)
-        : 0;
+function addHistoryPoint(net){
+history.push({net,time:simulationYearValue});
+if(history.length>35)history.shift();
 }
-/* =========================================================
-   CREATE CONTROLS
-   ========================================================= */
-function createControls() {
-    variables.forEach(variable => {
-        const wrapper =
-            document.createElement("div");
-        wrapper.className =
-            "control-item";
-        wrapper.innerHTML = `
-            <div class="control-label">
-                <label
-                    class="control-name"
-                    for="slider-${variable.id}"
-                >
-                    <span>${variable.icon}</span>
-                    ${variable.name}
-                </label>
-                <output
-                    id="value-${variable.id}"
-                    class="control-value"
-                    for="slider-${variable.id}"
-                >
-                    ${variable.defaultValue}%
-                </output>
-            </div>
-            <div class="slider-row">
-                <span class="slider-min">0</span>
-                <input
-                    id="slider-${variable.id}"
-                    type="range"
-                    min="0"
-                    max="100"
-                    step="1"
-                    value="${variable.defaultValue}"
-                    aria-label="${variable.name}"
-                >
-                <span class="slider-max">100</span>
-            </div>
-        `;
-        if (variable.group === "human") {
-            humanControls.appendChild(
-                wrapper
-            );
-        }
-        if (variable.group === "natural") {
-            naturalControls.appendChild(
-                wrapper
-            );
-        }
-        if (variable.group === "sink") {
-            sinkControls.appendChild(
-                wrapper
-            );
-        }
-        const slider =
-            wrapper.querySelector("input");
-        slider.addEventListener(
-            "input",
-            () => {
-                updateValueBadge(
-                    variable.id,
-                    slider.value
-                );
-                updateSliderVisual(
-                    slider
-                );
-                updateFactorStatus(
-                    wrapper,
-                    variable,
-                    Number(slider.value)
-                );
-                updateModel();
-                triggerFactorReaction(
-                    variable
-                );
-            }
-        );
-        updateSliderVisual(
-            slider
-        );
-        updateFactorStatus(
-            wrapper,
-            variable,
-            variable.defaultValue
-        );
-    });
+function updateSimulationTime(model,changed){
+if(!changed&&simulationTick===0)return;
+const magnitude=Math.abs(model.net-previousData.net);
+const direction=model.net>previousData.net?"increase":model.net<previousData.net?"decrease":"no change";
+if(changed){
+const timeAdvance=direction==="increase"?Math.max(1,Math.round(magnitude/2)):direction==="decrease"?Math.max(1,Math.round(magnitude/2)):1;
+simulationYearValue=Math.min(2100,simulationYearValue+timeAdvance);
 }
-/* =========================================================
-   FACTOR STATUS
-   ========================================================= */
-function getFactorState(
-    variable,
-    value
-) {
-    if (variable.group === "sink") {
-        if (value >= 70) {
-            return "good";
-        }
-        if (value >= 35) {
-            return "medium";
-        }
-        return "bad";
-    }
-    if (value <= 34) {
-        return "good";
-    }
-    if (value <= 69) {
-        return "medium";
-    }
-    return "bad";
+const milestones=[2026,2030,2040,2050,2075,2100];
+let nearest=milestones.reduce((a,b)=>Math.abs(b-simulationYearValue)<Math.abs(a-simulationYearValue)?b:a,2026);
+if(simulationYearValue<2026)nearest=2026;
+simulationYear.textContent=simulationYearValue;
+simulationStep.textContent=simulationYearValue===2026?"BASELINE":`STEP ${simulationTick}`;
 }
-function updateFactorStatus(
-    wrapper,
-    variable,
-    value
-) {
-    const state =
-        getFactorState(
-            variable,
-            value
-        );
-    let color =
-        "#d9a62e";
-    let background =
-        "rgba(217,166,46,.12)";
-    if (state === "good") {
-        color =
-            "#2f9b61";
-        background =
-            "rgba(47,155,97,.12)";
-    }
-    if (state === "bad") {
-        color =
-            "#d44949";
-        background =
-            "rgba(212,73,73,.12)";
-    }
-    wrapper.style.setProperty(
-        "--factor-color",
-        color
-    );
-    wrapper.style.setProperty(
-        "--factor-bg",
-        background
-    );
-    wrapper.style.borderLeft =
-        `3px solid ${color}`;
-    wrapper.style.transition =
-        "border-color .25s ease, background .25s ease";
-    const badge =
-        wrapper.querySelector(
-            ".control-value"
-        );
-    const name =
-        wrapper.querySelector(
-            ".control-name"
-        );
-    if (badge) {
-        badge.style.color =
-            color;
-        badge.style.background =
-            background;
-        badge.style.transition =
-            "color .2s ease, background .2s ease";
-    }
-    if (name) {
-        name.style.transition =
-            "color .2s ease";
-        name.style.color =
-            color;
-    }
+function updateChangePanel(model){
+const delta=model.net-previousData.net;
+const abs=Math.abs(delta);
+if(simulationTick===0){
+changeArrow.textContent="→";
+changeTitle.textContent="BASELINE";
+changeText.textContent="Move a climate variable to begin the simulation.";
+}else if(delta>0){
+changeArrow.textContent="↑";
+changeTitle.textContent="CARBON PRESSURE INCREASED";
+changeText.textContent=`Net balance rose by ${formatNumber(abs)} kt. Environmental stress is increasing.`;
+}else if(delta<0){
+changeArrow.textContent="↓";
+changeTitle.textContent="CARBON PRESSURE REDUCED";
+changeText.textContent=`Net balance fell by ${formatNumber(abs)} kt. Environmental conditions are improving.`;
+}else{
+changeArrow.textContent="→";
+changeTitle.textContent="NO NET CHANGE";
+changeText.textContent="The selected adjustment produced no net balance change.";
 }
-/* =========================================================
-   VALUE BADGE
-   ========================================================= */
-function updateValueBadge(
-    id,
-    value
-) {
-    const badge =
-        document.getElementById(
-            `value-${id}`
-        );
-    if (!badge) {
-        return;
-    }
-    badge.textContent =
-        `${value}%`;
-    badge.animate(
-        [
-            {
-                transform: "scale(1)"
-            },
-            {
-                transform: "scale(1.12)"
-            },
-            {
-                transform: "scale(1)"
-            }
-        ],
-        {
-            duration: 180,
-            easing: "ease-out"
-        }
-    );
+changeIndicator.classList.remove("changed");
+void changeIndicator.offsetWidth;
+changeIndicator.classList.add("changed");
+previousBalance.textContent=`${formatNumber(previousData.net)} kt`;
+currentBalance.textContent=`${formatNumber(model.net)} kt`;
+balanceDelta.textContent=`${signed(delta)} kt`;
+comparisonArrow.textContent=delta>0?"↑":delta<0?"↓":"→";
 }
-/* =========================================================
-   SLIDER VISUAL FEEDBACK
-   ========================================================= */
-function updateSliderVisual(
-    slider
-) {
-    const value =
-        Number(slider.value);
-    const percentage =
-        value + "%";
-    const variable =
-        variables.find(
-            item =>
-                `slider-${item.id}` ===
-                slider.id
-        );
-    if (!variable) {
-        return;
-    }
-    const state =
-        getFactorState(
-            variable,
-            value
-        );
-    let fill =
-        "#d9a62e";
-    if (state === "good") {
-        fill = "#2f9b61";
-    }
-    if (state === "bad") {
-        fill = "#d44949";
-    }
-    slider.style.background =
-        `linear-gradient(
-            90deg,
-            ${fill} 0%,
-            ${fill} ${percentage},
-            #dce6e2 ${percentage},
-            #dce6e2 100%
-        )`;
-    slider.style.setProperty(
-        "--slider-color",
-        fill
-    );
+function buildLiveMessage(model,state){
+const delta=model.net-previousData.net;
+const stress=calculateEnvironmentalStress(model);
+let direction=delta>0?"Net carbon pressure increased":delta<0?"Net carbon pressure decreased":"Net carbon pressure is unchanged";
+let environment=state==="stable"?"The simulated environmental system remains relatively balanced.":state==="warning"?"Several environmental systems are experiencing increasing pressure.":"The simulated environment is experiencing severe pressure.";
+return`Climate state: ${state.toUpperCase()}. ${direction} by ${formatNumber(Math.abs(delta))} kt. Atmospheric pressure is ${getLevel(stress.airStress,["low","moderate","elevated","high","extreme"])} and forest stress is ${getLevel(stress.forestStress,["low","moderate","noticeable","high","severe"])}. ${environment}`;
 }
-/* =========================================================
-   READ VARIABLE
-   ========================================================= */
-function getVariableValue(
-    variable
-) {
-    return getValue(
-        variable.id
-    );
+function announceCurrentState(variable){
+if(!variable)return;
+const model=currentData;
+const delta=model.net-previousData.net;
+const direction=delta>0?"increased":delta<0?"decreased":"did not change";
+const year=simulationYearValue;
+accessibilityLive.textContent=`Simulation year ${year}. ${variable.name} is now ${getValue(variable.id)} percent. Net carbon balance ${direction} by ${formatNumber(Math.abs(delta))} kilotons. Current net balance is ${formatNumber(model.net)} kilotons.`;
 }
-/* =========================================================
-   CALCULATE MODEL
-   ========================================================= */
-function calculateModel() {
-    let emissions = 0;
-    let absorption = 0;
-    variables.forEach(variable => {
-        const value =
-            getVariableValue(
-                variable
-            );
-        const contribution =
-            variable.weight *
-            (value / 100) *
-            10;
-        if (
-            variable.group === "human" ||
-            variable.group === "natural"
-        ) {
-            emissions +=
-                contribution;
-        } else {
-            absorption +=
-                contribution;
-        }
-    });
-    return {
-        emissions,
-        absorption,
-        net:
-            emissions -
-            absorption
-    };
+function updateGraphTargets(model){
+graphVisual.emissions=model.emissions;
+graphVisual.absorption=model.absorption;
+graphVisual.net=model.net;
+graphVisual.sources=variables.filter(v=>v.group!=="sink").map(v=>({name:v.name,value:v.weight*getValue(v.id)/100*10,icon:v.icon}));
+graphVisual.sinks=variables.filter(v=>v.group==="sink").map(v=>({name:v.name,value:v.weight*getValue(v.id)/100*10,icon:v.icon}));
+graphVisual.history=history.map(p=>p.net);
+startGraphAnimation();
 }
-/* =========================================================
-   CONTINUOUS ENVIRONMENTAL STRESS
-   ========================================================= */
-function calculateEnvironmentalStress(
-    model
-) {
-    const cars =
-        getValue("cars");
-    const airplanes =
-        getValue("airplanes");
-    const power =
-        getValue("power");
-    const cement =
-        getValue("cement");
-    const refineries =
-        getValue("refineries");
-    const landfills =
-        getValue("landfills");
-    const gas =
-        getValue("gas");
-    const animals =
-        getValue("animals");
-    const volcanoes =
-        getValue("volcanoes");
-    const wildfires =
-        getValue("wildfires");
-    const decay =
-        getValue("decay");
-    const forests =
-        getValue("forests");
-    const oceans =
-        getValue("oceans");
-    const soils =
-        getValue("soils");
-    /* NET STRESS */
-    const netStress =
-        clamp(
-            (model.net + 20) / 140
-        );
-    /* INDUSTRIAL PRESSURE */
-    const industrialStress =
-        clamp(
-            (
-                cars * 0.12 +
-                airplanes * 0.15 +
-                power * 0.24 +
-                cement * 0.18 +
-                refineries * 0.13 +
-                landfills * 0.09 +
-                gas * 0.09
-            ) / 100
-        );
-    /* NATURAL SOURCE PRESSURE */
-    const naturalStress =
-        clamp(
-            (
-                animals * 0.25 +
-                volcanoes * 0.20 +
-                wildfires * 0.35 +
-                decay * 0.20
-            ) / 100
-        );
-    /* FOREST STRESS */
-    const forestStress =
-        clamp(
-            netStress * 0.45 +
-            Math.pow(
-                1 - forests / 100,
-                0.78
-            ) * 0.55
-        );
-    /* OCEAN STRESS */
-    const oceanStress =
-        clamp(
-            netStress * 0.45 +
-            Math.pow(
-                1 - oceans / 100,
-                0.78
-            ) * 0.55
-        );
-    /* SOIL STRESS */
-    const soilStress =
-        clamp(
-            netStress * 0.40 +
-            Math.pow(
-                1 - soils / 100,
-                0.78
-            ) * 0.60
-        );
-    /* FIRE STRESS */
-    const fireStress =
-        clamp(
-            (wildfires / 100) * 0.50 +
-            netStress * 0.35 +
-            (1 - forests / 100) * 0.15
-        );
-    /* AIR STRESS */
-    const airStress =
-        clamp(
-            netStress * 0.55 +
-            industrialStress * 0.30 +
-            naturalStress * 0.15
-        );
-    /* TOTAL VISUAL STRESS */
-    const stress =
-        clamp(
-            netStress * 0.42 +
-            industrialStress * 0.17 +
-            forestStress * 0.13 +
-            oceanStress * 0.12 +
-            soilStress * 0.06 +
-            fireStress * 0.10
-        );
-    return {
-        stress,
-        netStress,
-        industrialStress,
-        naturalStress,
-        forestStress,
-        oceanStress,
-        soilStress,
-        fireStress,
-        airStress
-    };
+function startGraphAnimation(){
+if(graphAnimationFrame)cancelAnimationFrame(graphAnimationFrame);
+const target={emissions:graphVisual.emissions,absorption:graphVisual.absorption,net:graphVisual.net};
+const start={emissions:graphCanvasState.emissions,absorption:graphCanvasState.absorption,net:graphCanvasState.net};
+const startTime=performance.now();
+function animate(now){
+const p=clamp((now-startTime)/420);
+const eased=1-Math.pow(1-p,3);
+graphCanvasState.emissions=lerp(start.emissions,target.emissions,eased);
+graphCanvasState.absorption=lerp(start.absorption,target.absorption,eased);
+graphCanvasState.net=lerp(start.net,target.net,eased);
+drawGraph();
+if(p<1)graphAnimationFrame=requestAnimationFrame(animate);
 }
-/* =========================================================
-   APPLY ENVIRONMENT VARIABLES
-   ========================================================= */
-function updateEnvironmentVariables(
-    model
-) {
-    if (!stage) {
-        return;
-    }
-    const stress =
-        calculateEnvironmentalStress(
-            model
-        );
-    stage.style.setProperty(
-        "--stress",
-        stress.stress.toFixed(3)
-    );
-    stage.style.setProperty(
-        "--air-stress",
-        stress.airStress.toFixed(3)
-    );
-    stage.style.setProperty(
-        "--forest-stress",
-        stress.forestStress.toFixed(3)
-    );
-    stage.style.setProperty(
-        "--ocean-stress",
-        stress.oceanStress.toFixed(3)
-    );
-    stage.style.setProperty(
-        "--fire-stress",
-        stress.fireStress.toFixed(3)
-    );
-    stage.style.setProperty(
-        "--industrial-stress",
-        stress.industrialStress.toFixed(3)
-    );
-    stage.style.setProperty(
-        "--soil-stress",
-        stress.soilStress.toFixed(3)
-    );
-    stage.style.setProperty(
-        "--natural-stress",
-        stress.naturalStress.toFixed(3)
-    );
-    stage.style.setProperty(
-        "--net-stress",
-        stress.netStress.toFixed(3)
-    );
+graphAnimationFrame=requestAnimationFrame(animate);
 }
-/* =========================================================
-   UPDATE MODEL
-   ========================================================= */
-function updateModel() {
-    const model =
-        calculateModel();
-    currentData =
-        model;
-    updateNumbers(
-        model
-    );
-    updateState(
-        model.net
-    );
-    updateIndicators(
-        model
-    );
-    updateEnvironmentVariables(
-        model
-    );
-    addHistoryPoint(
-        model.net
-    );
-    updateGraphTargets();
-    startGraphAnimation();
+const graphCanvasState={emissions:0,absorption:0,net:0};
+function resizeCanvas(){
+const rect=canvas.getBoundingClientRect();
+const ratio=window.devicePixelRatio||1;
+canvas.width=Math.round(rect.width*ratio);
+canvas.height=Math.round(rect.height*ratio);
+ctx.setTransform(ratio,0,0,ratio,0,0);
+drawGraph();
 }
-/* =========================================================
-   ANIMATED NUMBERS
-   ========================================================= */
-function animateNumber(
-    element,
-    target
-) {
-    if (!element) {
-        return;
-    }
-    const oldAnimation =
-        numberAnimationIds.find(
-            item =>
-                item.element === element
-        );
-    if (oldAnimation) {
-        cancelAnimationFrame(
-            oldAnimation.id
-        );
-    }
-    const start =
-        Number(
-            element.textContent
-                .replace(/[^\d.-]/g, "")
-        ) || 0;
-    const difference =
-        target - start;
-    const duration =
-        320;
-    const startTime =
-        performance.now();
-    function tick(now) {
-        const progress =
-            Math.min(
-                (now - startTime) /
-                duration,
-                1
-            );
-        const eased =
-            1 -
-            Math.pow(
-                1 - progress,
-                3
-            );
-        const value =
-            start +
-            difference *
-            eased;
-        element.textContent =
-            value.toFixed(1);
-        if (progress < 1) {
-            const id =
-                requestAnimationFrame(
-                    tick
-                );
-            const existing =
-                numberAnimationIds.find(
-                    item =>
-                        item.element ===
-                        element
-                );
-            if (existing) {
-                existing.id = id;
-            } else {
-                numberAnimationIds.push({
-                    element,
-                    id
-                });
-            }
-        }
-    }
-    const id =
-        requestAnimationFrame(
-            tick
-        );
-    numberAnimationIds.push({
-        element,
-        id
-    });
+function getContributions(group){
+return variables.filter(v=>v.group===group).map(v=>({name:v.name,value:v.weight*getValue(v.id)/100*10,icon:v.icon}));
 }
-/* =========================================================
-   UPDATE NUMBERS
-   ========================================================= */
-function updateNumbers(
-    model
-) {
-    animateNumber(
-        emissionsValue,
-        model.emissions
-    );
-    animateNumber(
-        absorptionValue,
-        model.absorption
-    );
-    animateNumber(
-        balanceValue,
-        model.net
-    );
+function drawLabel(text,x,y,size=11,color="#b8ccc5"){
+ctx.fillStyle=color;
+ctx.font=`700 ${size}px Inter,Segoe UI,Arial,sans-serif`;
+ctx.fillText(text,x,y);
 }
-/* =========================================================
-   STATE LOGIC
-   ========================================================= */
-function getState(
-    net
-) {
-    if (net <= 15) {
-        return "stable";
-    }
-    if (net <= 100) {
-        return "warning";
-    }
-    return "critical";
+function drawBalanceGraph(){
+const w=canvas.clientWidth;
+const h=canvas.clientHeight;
+const max=Math.max(graphCanvasState.emissions,graphCanvasState.absorption,1);
+const left=95;
+const right=35;
+const usable=w-left-right;
+const barH=38;
+const y1=h*.31;
+const y2=h*.57;
+drawLabel("EMISSIONS",20,y1+6,10,"#dca0a0");
+drawLabel("ABSORPTION",20,y2+6,10,"#9bd6af");
+ctx.fillStyle="rgba(223,102,102,.82)";
+ctx.fillRect(left,y1,usable*(graphCanvasState.emissions/max),barH);
+ctx.fillStyle="rgba(87,184,123,.82)";
+ctx.fillRect(left,y2,usable*(graphCanvasState.absorption/max),barH);
+drawLabel(`${formatNumber(graphCanvasState.emissions)} kt`,left+usable*(graphCanvasState.emissions/max)+8,y1+25,12,"#fff");
+drawLabel(`${formatNumber(graphCanvasState.absorption)} kt`,left+usable*(graphCanvasState.absorption/max)+8,y2+25,12,"#fff");
+drawLabel(`NET BALANCE: ${signed(graphCanvasState.net)} kt`,20,h-28,12,"#d9e9e3");
 }
-/* =========================================================
-   UPDATE ENVIRONMENT STATE
-   ========================================================= */
-function updateState(
-    net
-) {
-    const state =
-        getState(
-            net
-        );
-    stage.classList.remove(
-        "stable",
-        "warning",
-        "critical"
-    );
-    stage.classList.add(
-        state
-    );
-    if (state === "stable") {
-        statusIcon.textContent =
-            "✓";
-        statusLabel.textContent =
-            "STABLE";
-        statusDescription.textContent =
-            "The carbon system is within a relatively balanced range.";
-        telemetryStatus.textContent =
-            "✓ STABLE";
-        telemetryStatus.className =
-            "telemetry-status stable-status";
-        liveClimateMessage.textContent =
-            "Climate state: Stable. Natural sinks are currently able to offset the modelled emissions within the defined threshold.";
-    }
-    if (state === "warning") {
-        statusIcon.textContent =
-            "⚠";
-        statusLabel.textContent =
-            "WARNING";
-        statusDescription.textContent =
-            "Carbon pressure is increasing and environmental systems are becoming stressed.";
-        telemetryStatus.textContent =
-            "⚠ WARNING";
-        telemetryStatus.className =
-            "telemetry-status warning-status";
-        liveClimateMessage.textContent =
-            "Climate state: Warning. The modelled emissions are exceeding the absorption capacity enough to create visible environmental stress.";
-    }
-    if (state === "critical") {
-        statusIcon.textContent =
-            "✕";
-        statusLabel.textContent =
-            "CRITICAL COLLAPSE";
-        statusDescription.textContent =
-            "Very high net emissions create severe environmental pressure in the model.";
-        telemetryStatus.textContent =
-            "✕ CRITICAL COLLAPSE";
-        telemetryStatus.className =
-            "telemetry-status critical-status";
-        liveClimateMessage.textContent =
-            "Climate state: Critical Collapse. Modelled emissions are substantially higher than natural absorption, producing severe environmental responses.";
-    }
+function drawSourceGraph(){
+const w=canvas.clientWidth;
+const h=canvas.clientHeight;
+const items=getContributions("human").concat(getContributions("natural")).sort((a,b)=>b.value-a.value).slice(0,7);
+const max=Math.max(...items.map(x=>x.value),1);
+const left=145;
+const usable=w-left-35;
+items.forEach((item,i)=>{
+const y=28+i*38;
+drawLabel(item.icon+" "+item.name.substring(0,18),10,y+12,9,"#a9bdb6");
+ctx.fillStyle=i<7?"rgba(215,91,91,.8)":"rgba(255,255,255,.2)";
+ctx.fillRect(left,y,usable*(item.value/max),22);
+drawLabel(formatNumber(item.value),left+usable*(item.value/max)+7,y+15,9,"#fff");
+});
 }
-/* =========================================================
-   INDICATORS
-   ========================================================= */
-function updateIndicators(
-    model
-) {
-    const net =
-        model.net;
-    if (net <= 15) {
-        airIndicator.textContent =
-            "Low";
-        forestIndicator.textContent =
-            "Healthy";
-        oceanIndicator.textContent =
-            "Healthy";
-        airQualityIndicator.textContent =
-            "Clear";
-        soilIndicator.textContent =
-            "Stable";
-        marineIndicator.textContent =
-            "Active";
-    }
-    else if (net <= 100) {
-        airIndicator.textContent =
-            "Rising";
-        forestIndicator.textContent =
-            "Stressed";
-        oceanIndicator.textContent =
-            "Under pressure";
-        airQualityIndicator.textContent =
-            "Hazy";
-        soilIndicator.textContent =
-            "Drying";
-        marineIndicator.textContent =
-            "Declining";
-    }
-    else {
-        airIndicator.textContent =
-            "Severe";
-        forestIndicator.textContent =
-            "Collapsing";
-        oceanIndicator.textContent =
-            "Acidified";
-        airQualityIndicator.textContent =
-            "Heavy smog";
-        soilIndicator.textContent =
-            "Degraded";
-        marineIndicator.textContent =
-            "Severely stressed";
-    }
+function drawSinkGraph(){
+const w=canvas.clientWidth;
+const h=canvas.clientHeight;
+const items=getContributions("sink");
+const max=Math.max(...items.map(x=>x.value),1);
+const left=145;
+const usable=w-left-35;
+items.forEach((item,i)=>{
+const y=55+i*75;
+drawLabel(item.icon+" "+item.name,10,y+15,10,"#a9bdb6");
+ctx.fillStyle="rgba(87,184,123,.82)";
+ctx.fillRect(left,y,usable*(item.value/max),32);
+drawLabel(formatNumber(item.value),left+usable*(item.value/max)+8,y+21,10,"#fff");
+});
 }
-/* =========================================================
-   HISTORY
-   ========================================================= */
-function addHistoryPoint(
-    net
-) {
-    history.push(
-        Number(net)
-    );
-    if (history.length > 35) {
-        history.shift();
-    }
+function drawDonutGraph(){
+const w=canvas.clientWidth;
+const h=canvas.clientHeight;
+const cx=w*.36;
+const cy=h*.52;
+const radius=Math.min(w,h)*.28;
+const items=getContributions("human").concat(getContributions("natural"));
+const total=items.reduce((s,x)=>s+x.value,0)||1;
+let angle=-Math.PI/2;
+items.forEach((item,i)=>{
+const next=angle+(item.value/total)*Math.PI*2;
+ctx.beginPath();
+ctx.moveTo(cx,cy);
+ctx.arc(cx,cy,radius,angle,next);
+ctx.closePath();
+ctx.fillStyle=`hsl(${i*27},58%,${52+i%3*5}%)`;
+ctx.fill();
+angle=next;
+});
+ctx.beginPath();
+ctx.arc(cx,cy,radius*.56,0,Math.PI*2);
+ctx.fillStyle="#142b27";
+ctx.fill();
+drawLabel(`${formatNumber(total)}`,cx-25,cy+4,15,"#fff");
+drawLabel("TOTAL",cx-19,cy+20,8,"#91aaa1");
+items.slice(0,7).forEach((item,i)=>{
+const x=w*.62;
+const y=35+i*35;
+ctx.fillStyle=`hsl(${i*27},58%,${52+i%3*5}%)`;
+ctx.fillRect(x,y,9,9);
+drawLabel(item.name.substring(0,20),x+17,y+9,9,"#a9bdb6");
+});
 }
-/* =========================================================
-   GRAPH DESCRIPTION
-   ========================================================= */
-function updateGraphDescription(
-    type
-) {
-    const descriptions = {
-        balance:
-            "Gross emissions and absorption are compared with a compact scale.",
-        sources:
-            "Human and natural emission sources are compared by their current contribution.",
-        sinks:
-            "Forest, ocean and soil absorption are compared by current capacity.",
-        donut:
-            "Current gross emissions are divided among the modelled emission sources.",
-        history:
-            "Recent net-balance changes are plotted against time."
-    };
-    if (graphDescription) {
-        graphDescription.textContent =
-            descriptions[type] ||
-            "";
-    }
+function drawHistoryGraph(){
+const w=canvas.clientWidth;
+const h=canvas.clientHeight;
+const values=history.length?history.map(x=>x.net):[currentData.net];
+const years=history.length?history.map(x=>x.time):[simulationYearValue];
+const maxRaw=Math.max(...values,10);
+const minRaw=Math.min(...values,-10);
+const padding=Math.max(10,Math.abs(maxRaw-minRaw)*.12);
+const max=maxRaw+padding;
+const min=minRaw-padding;
+const range=Math.max(max-min,20);
+const left=68;
+const right=25;
+const top=38;
+const bottom=58;
+const usableW=w-left-right;
+const usableH=h-top-bottom;
+const zeroY=top+(max/range)*usableH;
+ctx.save();
+ctx.strokeStyle="rgba(255,255,255,.28)";
+ctx.lineWidth=1;
+ctx.beginPath();
+ctx.moveTo(left,top);
+ctx.lineTo(left,h-bottom);
+ctx.lineTo(w-right,h-bottom);
+ctx.stroke();
+const yTicks=5;
+for(let i=0;i<=yTicks;i++){
+const value=max-(range/yTicks)*i;
+const y=top+(usableH/yTicks)*i;
+ctx.strokeStyle="rgba(255,255,255,.09)";
+ctx.beginPath();
+ctx.moveTo(left,y);
+ctx.lineTo(w-right,y);
+ctx.stroke();
+drawLabel(formatNumber(value),8,y+4,9,"#91aaa1");
 }
-/* =========================================================
-   CANVAS RESIZE
-   ========================================================= */
-function resizeCanvas() {
-    if (!canvas) {
-        return;
-    }
-    const rect =
-        canvas.getBoundingClientRect();
-    const ratio =
-        Math.max(
-            1,
-            window.devicePixelRatio || 1
-        );
-    canvas.width =
-        Math.max(
-            1,
-            rect.width * ratio
-        );
-    canvas.height =
-        Math.max(
-            1,
-            rect.height * ratio
-        );
-    ctx.setTransform(
-        ratio,
-        0,
-        0,
-        ratio,
-        0,
-        0
-    );
-    drawGraph();
+ctx.strokeStyle="rgba(255,255,255,.3)";
+ctx.beginPath();
+ctx.moveTo(left,zeroY);
+ctx.lineTo(w-right,zeroY);
+ctx.stroke();
+drawLabel("0",43,zeroY+4,9,"#b8ccc5");
+const xTicks=Math.min(6,Math.max(2,years.length));
+for(let i=0;i<xTicks;i++){
+const index=years.length===1?0:Math.round(i*(years.length-1)/(xTicks-1));
+const x=years.length===1?left+usableW/2:left+(index/(years.length-1))*usableW;
+ctx.strokeStyle="rgba(255,255,255,.18)";
+ctx.beginPath();
+ctx.moveTo(x,h-bottom);
+ctx.lineTo(x,h-bottom+6);
+ctx.stroke();
+const label=String(years[index]);
+const textWidth=ctx.measureText(label).width;
+drawLabel(label,x-textWidth/2,h-bottom+21,9,"#91aaa1");
 }
-/* =========================================================
-   GRAPH DATA
-   ========================================================= */
-function getContributions(
-    group
-) {
-    return variables
-        .filter(
-            variable =>
-                variable.group === group
-        )
-        .map(
-            variable => {
-                const value =
-                    getVariableValue(
-                        variable
-                    );
-                return {
-                    ...variable,
-                    contribution:
-                        variable.weight *
-                        (value / 100) *
-                        10
-                };
-            }
-        );
+drawLabel("NET BALANCE (kt)",8,18,9,"#91aaa1");
+drawLabel("SIMULATION YEAR",w/2-45,h-12,9,"#91aaa1");
+ctx.beginPath();
+values.forEach((value,i)=>{
+const x=values.length===1?left+usableW/2:left+(i/(values.length-1))*usableW;
+const y=top+(max-value)/range*usableH;
+if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+});
+ctx.strokeStyle="#75c891";
+ctx.lineWidth=3;
+ctx.stroke();
+values.forEach((value,i)=>{
+const x=values.length===1?left+usableW/2:left+(i/(values.length-1))*usableW;
+const y=top+(max-value)/range*usableH;
+ctx.beginPath();
+ctx.arc(x,y,5,0,Math.PI*2);
+ctx.fillStyle="#142b27";
+ctx.fill();
+ctx.strokeStyle="#75c891";
+ctx.lineWidth=2;
+ctx.stroke();
+});
+if(values.length){
+const lastIndex=values.length-1;
+const lastX=values.length===1?left+usableW/2:left+(lastIndex/(values.length-1))*usableW;
+const lastY=top+(max-values[lastIndex])/range*usableH;
+ctx.beginPath();
+ctx.arc(lastX,lastY,8,0,Math.PI*2);
+ctx.strokeStyle="rgba(117,200,145,.35)";
+ctx.lineWidth=3;
+ctx.stroke();
+drawLabel(`${formatNumber(values[lastIndex])} kt`,Math.min(lastX+10,w-90),lastY-10,10,"#d8eee1");
 }
-/* =========================================================
-   GRAPH TARGETS
-   ========================================================= */
-function updateGraphTargets() {
-    const sourceData =
-        getContributions("human")
-            .concat(
-                getContributions("natural")
-            );
-    const sinkData =
-        getContributions("sink");
-    graphTarget.emissions =
-        currentData.emissions;
-    graphTarget.absorption =
-        currentData.absorption;
-    graphTarget.net =
-        currentData.net;
-    graphTarget.sources =
-        sourceData.map(
-            item =>
-                item.contribution
-        );
-    graphTarget.sinks =
-        sinkData.map(
-            item =>
-                item.contribution
-        );
-    graphTarget.history =
-        history.slice();
+ctx.restore();
 }
-/* =========================================================
-   GRAPH ANIMATION
-   ========================================================= */
-function startGraphAnimation() {
-    if (graphAnimationFrame) {
-        return;
-    }
-    function animate() {
-        const speed =
-            0.16;
-        graphVisual.emissions =
-            lerp(
-                graphVisual.emissions,
-                graphTarget.emissions,
-                speed
-            );
-        graphVisual.absorption =
-            lerp(
-                graphVisual.absorption,
-                graphTarget.absorption,
-                speed
-            );
-        graphVisual.net =
-            lerp(
-                graphVisual.net,
-                graphTarget.net,
-                speed
-            );
-        graphVisual.sources =
-            animateArray(
-                graphVisual.sources,
-                graphTarget.sources,
-                speed
-            );
-        graphVisual.sinks =
-            animateArray(
-                graphVisual.sinks,
-                graphTarget.sinks,
-                speed
-            );
-        graphVisual.history =
-            graphTarget.history.slice();
-        drawGraph();
-        const difference =
-            Math.abs(
-                graphVisual.emissions -
-                graphTarget.emissions
-            ) +
-            Math.abs(
-                graphVisual.absorption -
-                graphTarget.absorption
-            ) +
-            Math.abs(
-                graphVisual.net -
-                graphTarget.net
-            );
-        if (difference > 0.02) {
-            graphAnimationFrame =
-                requestAnimationFrame(
-                    animate
-                );
-        } else {
-            graphVisual.emissions =
-                graphTarget.emissions;
-            graphVisual.absorption =
-                graphTarget.absorption;
-            graphVisual.net =
-                graphTarget.net;
-            graphVisual.sources =
-                graphTarget.sources.slice();
-            graphVisual.sinks =
-                graphTarget.sinks.slice();
-            graphAnimationFrame =
-                null;
-            drawGraph();
-        }
-    }
-    graphAnimationFrame =
-        requestAnimationFrame(
-            animate
-        );
+function updateGraphDescription(){
+const descriptions={
+balance:"Gross emissions and gross absorption are shown as horizontal bars.",
+sources:"The largest simulated carbon-emitting sources are displayed for comparison.",
+sinks:"The modelled contribution of forests, oceans and soils is shown here.",
+donut:"The composition of modelled carbon emissions is shown as a proportional ring.",
+history:"Each meaningful slider adjustment adds a point to the simulated balance timeline."
+};
+graphDescription.textContent=descriptions[graphType.value];
 }
-function animateArray(
-    current,
-    target,
-    amount
-) {
-    const result = [];
-    for (
-        let i = 0;
-        i < target.length;
-        i++
-    ) {
-        const currentValue =
-            current[i] || 0;
-        result[i] =
-            lerp(
-                currentValue,
-                target[i],
-                amount
-            );
-    }
-    return result;
+function drawGraph(){
+const w=canvas.clientWidth;
+const h=canvas.clientHeight;
+ctx.clearRect(0,0,w,h);
+ctx.lineWidth=1;
+if(graphType.value==="balance")drawBalanceGraph();
+else if(graphType.value==="sources")drawSourceGraph();
+else if(graphType.value==="sinks")drawSinkGraph();
+else if(graphType.value==="donut")drawDonutGraph();
+else drawHistoryGraph();
+chartLiveValue.textContent=`NET ${signed(graphCanvasState.net)} KT`;
 }
-/* =========================================================
-   CANVAS HELPERS
-   ========================================================= */
-function clearCanvas() {
-    const width =
-        canvas.clientWidth;
-    const height =
-        canvas.clientHeight;
-    ctx.clearRect(
-        0,
-        0,
-        width,
-        height
-    );
+function updateModel(changed=false){
+const model=calculateModel();
+previousData={...currentData};
+if(changed)updateSimulationTime(model,true);
+updateNumbers(model,changed);
+currentData=model;
+updateState(model);
+updateIndicators(model);
+updateEnvironmentVariables(model);
+if(changed)addHistoryPoint(model.net);
+updateGraphTargets(model);
+const state=getState(model.net);
+liveClimateMessage.textContent=buildLiveMessage(model,state);
+if(changed)updateChangePanel(model);
+if(changed&&lastChangedVariable)announceCurrentState(lastChangedVariable);
 }
-function drawText(
-    text,
-    x,
-    y,
-    size,
-    color,
-    weight = "600"
-) {
-    ctx.font =
-        `${weight} ${size}px Inter, Arial, sans-serif`;
-    ctx.fillStyle =
-        color;
-    ctx.fillText(
-        text,
-        x,
-        y
-    );
+function createReactionParticle(variable){
+const particle=document.createElement("span");
+particle.className="extra-particle reaction-particle";
+particle.textContent=variable.icon;
+particle.style.left=`${25+Math.random()*50}%`;
+particle.style.top=`${25+Math.random()*40}%`;
+particle.style.fontSize="1.2rem";
+particle.style.width="auto";
+particle.style.height="auto";
+particle.style.background="transparent";
+particle.style.animation="reactionPop .8s ease-out forwards";
+stage.appendChild(particle);
+setTimeout(()=>particle.remove(),850);
 }
-/* =========================================================
-   GRAPH GRID
-   ========================================================= */
-function drawGrid(
-    left,
-    top,
-    width,
-    height,
-    horizontalLines = 4,
-    verticalLines = 5
-) {
-    ctx.save();
-    ctx.strokeStyle =
-        "rgba(255,255,255,.10)";
-    ctx.lineWidth =
-        1;
-    ctx.setLineDash(
-        [2, 5]
-    );
-    for (
-        let i = 0;
-        i <= horizontalLines;
-        i++
-    ) {
-        const y =
-            top +
-            (i / horizontalLines) *
-            height;
-        ctx.beginPath();
-        ctx.moveTo(
-            left,
-            y
-        );
-        ctx.lineTo(
-            left + width,
-            y
-        );
-        ctx.stroke();
-    }
-    for (
-        let i = 0;
-        i <= verticalLines;
-        i++
-    ) {
-        const x =
-            left +
-            (i / verticalLines) *
-            width;
-        ctx.beginPath();
-        ctx.moveTo(
-            x,
-            top
-        );
-        ctx.lineTo(
-            x,
-            top + height
-        );
-        ctx.stroke();
-    }
-    ctx.setLineDash(
-        []
-    );
-    ctx.restore();
+function triggerFactorReaction(variable){
+createReactionParticle(variable);
+const selectors={
+forests:".tree",
+oceans:".ocean-layer,.fish,.whale",
+soils:".soil-particles,.ground-layer",
+wildfires:".wildfire",
+power:".factory,.factory-smoke",
+cement:".factory",
+refineries:".factory",
+landfills:".ground-layer",
+gas:".factory",
+cars:".air-particles",
+airplanes:".cloud,.air-particles",
+animals:".air-particles",
+volcanoes:".air-particles",
+decay:".air-particles,.falling-leaves"
+};
+const elements=document.querySelectorAll(selectors[variable.id]||".air-particles");
+elements.forEach(element=>{
+element.classList.remove("factor-react");
+void element.offsetWidth;
+element.classList.add("factor-react");
+});
 }
-/* =========================================================
-   GRAPH AXES
-   ========================================================= */
-function drawAxes(
-    left,
-    top,
-    width,
-    height,
-    maxValue,
-    unit = "kt"
-) {
-    const bottom =
-        top + height;
-    ctx.strokeStyle =
-        "rgba(255,255,255,.30)";
-    ctx.lineWidth =
-        1;
-    /* Y AXIS */
-    ctx.beginPath();
-    ctx.moveTo(
-        left,
-        top
-    );
-    ctx.lineTo(
-        left,
-        bottom
-    );
-    ctx.stroke();
-    /* X AXIS */
-    ctx.beginPath();
-    ctx.moveTo(
-        left,
-        bottom
-    );
-    ctx.lineTo(
-        left + width,
-        bottom
-    );
-    ctx.stroke();
-    /* Y LABELS */
-    for (
-        let i = 0;
-        i <= 4;
-        i++
-    ) {
-        const value =
-            maxValue *
-            (1 - i / 4);
-        const y =
-            top +
-            (i / 4) *
-            height;
-        drawText(
-            value.toFixed(1),
-            3,
-            y + 3,
-            8,
-            "#829c92"
-        );
-    }
-    /* X SCALE */
-    for (
-        let i = 0;
-        i <= 4;
-        i++
-    ) {
-        const value =
-            maxValue *
-            (i / 4);
-        const x =
-            left +
-            (i / 4) *
-            width;
-        drawText(
-            value.toFixed(1),
-            x - 8,
-            bottom + 15,
-            8,
-            "#829c92"
-        );
-    }
-    drawText(
-        unit,
-        left + width + 3,
-        bottom + 15,
-        8,
-        "#829c92",
-        "700"
-    );
+function createExtraParticles(){
+if(stage.querySelector(".extra-particle"))return;
+for(let i=1;i<=8;i++){
+const particle=document.createElement("span");
+particle.className=`extra-particle p${i}`;
+stage.appendChild(particle);
 }
-/* =========================================================
-   ROUNDED RECT
-   ========================================================= */
-function roundRect(
-    context,
-    x,
-    y,
-    width,
-    height,
-    radius
-) {
-    context.beginPath();
-    context.roundRect(
-        x,
-        y,
-        width,
-        height,
-        radius
-    );
-    context.fill();
 }
-/* =========================================================
-   HORIZONTAL BAR
-   ========================================================= */
-function drawHorizontalBar(
-    x,
-    y,
-    width,
-    height,
-    ratio,
-    color
-) {
-    const safeRatio =
-        clamp(
-            ratio
-        );
-    ctx.fillStyle =
-        "rgba(255,255,255,.065)";
-    roundRect(
-        ctx,
-        x,
-        y,
-        width,
-        height,
-        7
-    );
-    if (safeRatio <= 0) {
-        return;
-    }
-    ctx.fillStyle =
-        color;
-    roundRect(
-        ctx,
-        x,
-        y,
-        width * safeRatio,
-        height,
-        7
-    );
+function continuousSceneMotion(time){
+const wave=(Math.sin(time/700)+1)/2;
+const fast=(Math.sin(time/320)+1)/2;
+const slow=(Math.sin(time/1700)+1)/2;
+stage.style.setProperty("--motion-wave",wave);
+stage.style.setProperty("--motion-fast",fast);
+stage.style.setProperty("--motion-slow",slow);
+sceneAnimationFrame=requestAnimationFrame(continuousSceneMotion);
 }
-/* =========================================================
-   BALANCE GRAPH
-   ========================================================= */
-function drawBalanceGraph() {
-    const width =
-        canvas.clientWidth;
-    const height =
-        canvas.clientHeight;
-    const left =
-        42;
-    const top =
-        25;
-    const chartWidth =
-        width - 58;
-    const chartHeight =
-        210;
-    const maxValue =
-        Math.max(
-            graphVisual.emissions,
-            graphVisual.absorption,
-            1
-        );
-    drawGrid(
-        left,
-        top,
-        chartWidth,
-        chartHeight,
-        4,
-        4
-    );
-    drawAxes(
-        left,
-        top,
-        chartWidth,
-        chartHeight,
-        maxValue
-    );
-    const emissionY =
-        top + 42;
-    const absorptionY =
-        top + 128;
-    drawText(
-        "EMISSIONS",
-        left + 5,
-        emissionY - 10,
-        10,
-        "#df7777",
-        "800"
-    );
-    drawText(
-        `${graphVisual.emissions.toFixed(1)} kt`,
-        left + chartWidth - 55,
-        emissionY - 10,
-        9,
-        "#dbe6e2",
-        "700"
-    );
-    drawHorizontalBar(
-        left + 5,
-        emissionY,
-        chartWidth - 10,
-        24,
-        graphVisual.emissions /
-        maxValue,
-        "#df6666"
-    );
-    drawText(
-        "ABSORPTION",
-        left + 5,
-        absorptionY - 10,
-        10,
-        "#62bf87",
-        "800"
-    );
-    drawText(
-        `${graphVisual.absorption.toFixed(1)} kt`,
-        left + chartWidth - 55,
-        absorptionY - 10,
-        9,
-        "#dbe6e2",
-        "700"
-    );
-    drawHorizontalBar(
-        left + 5,
-        absorptionY,
-        chartWidth - 10,
-        24,
-        graphVisual.absorption /
-        maxValue,
-        "#57b87b"
-    );
-    const state =
-        getState(
-            graphVisual.net
-        );
-    let label =
-        "STABLE";
-    if (state === "warning") {
-        label = "WARNING";
-    }
-    if (state === "critical") {
-        label = "CRITICAL";
-    }
-    drawText(
-        `NET BALANCE  ${graphVisual.net >= 0 ? "+" : ""}${graphVisual.net.toFixed(1)} kt`,
-        left + 5,
-        height - 30,
-        11,
-        "#ffffff",
-        "800"
-    );
-    drawText(
-        label,
-        width - 80,
-        height - 30,
-        9,
-        state === "stable"
-            ? "#62bf87"
-            : state === "warning"
-                ? "#e5bd48"
-                : "#ef6b6b",
-        "900"
-    );
-}
-/* =========================================================
-   SOURCE GRAPH
-   ========================================================= */
-function drawSourceGraph() {
-    const width =
-        canvas.clientWidth;
-    const height =
-        canvas.clientHeight;
-    const data =
-        getContributions("human")
-            .concat(
-                getContributions("natural")
-            );
-    const left =
-        125;
-    const right =
-        35;
-    const top =
-        17;
-    const chartWidth =
-        width -
-        left -
-        right;
-    const maxValue =
-        Math.max(
-            ...data.map(
-                item =>
-                    item.contribution
-            ),
-            1
-        );
-    const rowHeight =
-        Math.min(
-            25,
-            (height - 30) /
-            data.length
-        );
-    /* DOTTED VERTICAL SCALE */
-    drawGrid(
-        left,
-        top,
-        chartWidth,
-        rowHeight * data.length,
-        4,
-        4
-    );
-    data.forEach(
-        (item, index) => {
-            const value =
-                graphVisual.sources[index] ||
-                0;
-            const y =
-                top +
-                index *
-                rowHeight;
-            let label =
-                item.name;
-            if (label.length > 18) {
-                label =
-                    label.substring(
-                        0,
-                        17
-                    ) +
-                    "…";
-            }
-            drawText(
-                label,
-                4,
-                y + 13,
-                8,
-                "#cbd8d3",
-                "600"
-            );
-            const barY =
-                y + 5;
-            drawHorizontalBar(
-                left,
-                barY,
-                chartWidth - 28,
-                11,
-                value / maxValue,
-                item.group === "human"
-                    ? "#df6666"
-                    : "#d99b48"
-            );
-            drawText(
-                value.toFixed(1),
-                width - 25,
-                y + 14,
-                8,
-                "#dce7e3",
-                "800"
-            );
-        }
-    );
-    /* X AXIS */
-    const axisY =
-        height - 5;
-    ctx.strokeStyle =
-        "rgba(255,255,255,.25)";
-    ctx.beginPath();
-    ctx.moveTo(
-        left,
-        axisY
-    );
-    ctx.lineTo(
-        width - right,
-        axisY
-    );
-    ctx.stroke();
-    drawText(
-        "0",
-        left - 3,
-        axisY - 3,
-        8,
-        "#829c92"
-    );
-    drawText(
-        `${maxValue.toFixed(1)} kt`,
-        width - 48,
-        axisY - 3,
-        8,
-        "#829c92"
-    );
-}
-/* =========================================================
-   SINK GRAPH
-   ========================================================= */
-function drawSinkGraph() {
-    const width =
-        canvas.clientWidth;
-    const height =
-        canvas.clientHeight;
-    const data =
-        getContributions(
-            "sink"
-        );
-    const left =
-        90;
-    const right =
-        35;
-    const top =
-        32;
-    const chartWidth =
-        width -
-        left -
-        right;
-    const chartHeight =
-        175;
-    const maxValue =
-        Math.max(
-            ...data.map(
-                item =>
-                    item.contribution
-            ),
-            1
-        );
-    drawGrid(
-        left,
-        top,
-        chartWidth,
-        chartHeight,
-        4,
-        4
-    );
-    drawAxes(
-        left,
-        top,
-        chartWidth,
-        chartHeight,
-        maxValue
-    );
-    data.forEach(
-        (item, index) => {
-            const value =
-                graphVisual.sinks[index] ||
-                0;
-            const y =
-                top +
-                15 +
-                index *
-                55;
-            let label =
-                item.name;
-            if (label.length > 13) {
-                label =
-                    label.substring(
-                        0,
-                        12
-                    ) +
-                    "…";
-            }
-            drawText(
-                label,
-                4,
-                y + 8,
-                9,
-                "#cbd8d3",
-                "700"
-            );
-            drawHorizontalBar(
-                left,
-                y,
-                chartWidth - 12,
-                20,
-                value / maxValue,
-                "#57b87b"
-            );
-            drawText(
-                `${value.toFixed(1)} kt`,
-                width - 42,
-                y + 14,
-                8,
-                "#dce7e3",
-                "800"
-            );
-        }
-    );
-    drawText(
-        "Higher sink activity = greater carbon absorption",
-        4,
-        height - 12,
-        8,
-        "#829c92"
-    );
-}
-/* =========================================================
-   DONUT GRAPH
-   ========================================================= */
-function drawDonutGraph() {
-    const width =
-        canvas.clientWidth;
-    const height =
-        canvas.clientHeight;
-    const data =
-        getContributions("human")
-            .concat(
-                getContributions("natural")
-            );
-    const total =
-        graphVisual.sources.reduce(
-            (sum, value) =>
-                sum + value,
-            0
-        );
-    const centerX =
-        width * 0.30;
-    const centerY =
-        height * 0.52;
-    const radius =
-        Math.min(
-            75,
-            height * 0.32
-        );
-    const innerRadius =
-        radius * 0.54;
-    let angle =
-        -Math.PI / 2;
-    data.forEach(
-        (item, index) => {
-            const value =
-                graphVisual.sources[index] ||
-                0;
-            const portion =
-                total === 0
-                    ? 0
-                    : value / total;
-            const nextAngle =
-                angle +
-                portion *
-                Math.PI *
-                2;
-            ctx.beginPath();
-            ctx.moveTo(
-                centerX,
-                centerY
-            );
-            ctx.arc(
-                centerX,
-                centerY,
-                radius,
-                angle,
-                nextAngle
-            );
-            ctx.closePath();
-            ctx.fillStyle =
-                item.group === "human"
-                    ? "#df6666"
-                    : "#d99b48";
-            ctx.globalAlpha =
-                0.45 +
-                index * 0.025;
-            ctx.fill();
-            ctx.globalAlpha =
-                1;
-            angle =
-                nextAngle;
-        }
-    );
-    /* INNER CIRCLE */
-    ctx.beginPath();
-    ctx.arc(
-        centerX,
-        centerY,
-        innerRadius,
-        0,
-        Math.PI * 2
-    );
-    ctx.fillStyle =
-        "#11221f";
-    ctx.fill();
-    drawText(
-        "EMISSIONS",
-        centerX - 31,
-        centerY - 3,
-        8,
-        "#91aaa1",
-        "800"
-    );
-    drawText(
-        total.toFixed(1),
-        centerX - 17,
-        centerY + 17,
-        13,
-        "#ffffff",
-        "900"
-    );
-    /* LEGEND */
-    data.forEach(
-        (item, index) => {
-            const y =
-                22 +
-                index * 22;
-            const value =
-                graphVisual.sources[index] ||
-                0;
-            let label =
-                item.name;
-            if (label.length > 17) {
-                label =
-                    label.substring(
-                        0,
-                        16
-                    ) +
-                    "…";
-            }
-            ctx.fillStyle =
-                item.group === "human"
-                    ? "#df6666"
-                    : "#d99b48";
-            ctx.fillRect(
-                width * 0.54,
-                y - 7,
-                7,
-                7
-            );
-            drawText(
-                label,
-                width * 0.58,
-                y,
-                8,
-                "#cbd8d3"
-            );
-            drawText(
-                value.toFixed(1),
-                width - 25,
-                y,
-                8,
-                "#91aaa1",
-                "700"
-            );
-        }
-    );
-}
-/* =========================================================
-   HISTORY GRAPH
-   ========================================================= */
-function drawHistoryGraph() {
-    const width =
-        canvas.clientWidth;
-    const height =
-        canvas.clientHeight;
-    const paddingLeft =
-        35;
-    const paddingRight =
-        20;
-    const paddingTop =
-        20;
-    const paddingBottom =
-        30;
-    const chartWidth =
-        width -
-        paddingLeft -
-        paddingRight;
-    const chartHeight =
-        height -
-        paddingTop -
-        paddingBottom;
-    const data =
-        graphVisual.history;
-    if (data.length < 2) {
-        drawText(
-            "Move a slider to build the balance history.",
-            28,
-            height / 2,
-            11,
-            "#91aaa1"
-        );
-        return;
-    }
-    const min =
-        Math.min(
-            ...data,
-            0
-        );
-    const max =
-        Math.max(
-            ...data,
-            15
-        );
-    const range =
-        Math.max(
-            max - min,
-            1
-        );
-    drawGrid(
-        paddingLeft,
-        paddingTop,
-        chartWidth,
-        chartHeight,
-        4,
-        5
-    );
-    /* AXES */
-    ctx.strokeStyle =
-        "rgba(255,255,255,.28)";
-    ctx.beginPath();
-    ctx.moveTo(
-        paddingLeft,
-        paddingTop
-    );
-    ctx.lineTo(
-        paddingLeft,
-        height - paddingBottom
-    );
-    ctx.lineTo(
-        width - paddingRight,
-        height - paddingBottom
-    );
-    ctx.stroke();
-    /* Y LABELS */
-    for (
-        let i = 0;
-        i <= 4;
-        i++
-    ) {
-        const value =
-            max -
-            ((max - min) *
-            i / 4);
-        const y =
-            paddingTop +
-            (i / 4) *
-            chartHeight;
-        drawText(
-            value.toFixed(0),
-            3,
-            y + 3,
-            8,
-            "#829c92"
-        );
-    }
-    /* ZERO LINE */
-    if (
-        min <= 0 &&
-        max >= 0
-    ) {
-        const zeroY =
-            paddingTop +
-            ((max - 0) / range) *
-            chartHeight;
-        ctx.save();
-        ctx.strokeStyle =
-            "rgba(255,255,255,.28)";
-        ctx.setLineDash(
-            [3, 5]
-        );
-        ctx.beginPath();
-        ctx.moveTo(
-            paddingLeft,
-            zeroY
-        );
-        ctx.lineTo(
-            width - paddingRight,
-            zeroY
-        );
-        ctx.stroke();
-        ctx.restore();
-        drawText(
-            "0",
-            paddingLeft + 4,
-            zeroY - 5,
-            8,
-            "#a5b7b0",
-            "700"
-        );
-    }
-    /* LINE */
-    ctx.beginPath();
-    data.forEach(
-        (value, index) => {
-            const x =
-                paddingLeft +
-                (
-                    index /
-                    (data.length - 1)
-                ) *
-                chartWidth;
-            const y =
-                paddingTop +
-                (
-                    (max - value) /
-                    range
-                ) *
-                chartHeight;
-            if (index === 0) {
-                ctx.moveTo(
-                    x,
-                    y
-                );
-            } else {
-                ctx.lineTo(
-                    x,
-                    y
-                );
-            }
-        }
-    );
-    ctx.strokeStyle =
-        "#70c98f";
-    ctx.lineWidth =
-        2.5;
-    ctx.lineJoin =
-        "round";
-    ctx.lineCap =
-        "round";
-    ctx.stroke();
-    /* POINTS */
-    data.forEach(
-        (value, index) => {
-            if (
-                index !== data.length - 1 &&
-                index % 5 !== 0
-            ) {
-                return;
-            }
-            const x =
-                paddingLeft +
-                (
-                    index /
-                    (data.length - 1)
-                ) *
-                chartWidth;
-            const y =
-                paddingTop +
-                (
-                    (max - value) /
-                    range
-                ) *
-                chartHeight;
-            ctx.beginPath();
-            ctx.arc(
-                x,
-                y,
-                index ===
-                    data.length - 1
-                    ? 5
-                    : 2.5,
-                0,
-                Math.PI * 2
-            );
-            ctx.fillStyle =
-                "#ffffff";
-            ctx.fill();
-            ctx.strokeStyle =
-                "#70c98f";
-            ctx.lineWidth =
-                1.5;
-            ctx.stroke();
-        }
-    );
-    const last =
-        data[data.length - 1];
-    drawText(
-        `Current: ${last >= 0 ? "+" : ""}${last.toFixed(1)} kt`,
-        paddingLeft,
-        height - 8,
-        9,
-        "#dce7e3",
-        "800"
-    );
-    drawText(
-        "TIME →",
-        width - 48,
-        height - 8,
-        8,
-        "#829c92",
-        "800"
-    );
-}
-/* =========================================================
-   DRAW GRAPH
-   ========================================================= */
-function drawGraph() {
-    if (
-        !canvas ||
-        !canvas.clientWidth
-    ) {
-        return;
-    }
-    clearCanvas();
-    updateGraphDescription(
-        graphType.value
-    );
-    switch (
-        graphType.value
-    ) {
-        case "balance":
-            drawBalanceGraph();
-            break;
-        case "sources":
-            drawSourceGraph();
-            break;
-        case "sinks":
-            drawSinkGraph();
-            break;
-        case "donut":
-            drawDonutGraph();
-            break;
-        case "history":
-            drawHistoryGraph();
-            break;
-    }
-}
-/* =========================================================
-   GRAPH CHANGE
-   ========================================================= */
-graphType.addEventListener(
-    "change",
-    () => {
-        drawGraph();
-    }
-);
-/* =========================================================
-   REACTION PARTICLES
-   ========================================================= */
-function createReactionParticle(
-    variable
-) {
-    if (!stage) {
-        return;
-    }
-    const now =
-        performance.now();
-    if (
-        now - lastReactionTime <
-        55
-    ) {
-        return;
-    }
-    lastReactionTime =
-        now;
-    const particle =
-        document.createElement(
-            "span"
-        );
-    particle.className =
-        "sandbox-reaction-particle";
-    let emoji =
-        "•";
-    let left =
-        "50%";
-    let top =
-        "50%";
-    if (
-        variable.id === "forests"
-    ) {
-        emoji =
-            variable.group === "sink"
-                ? "🍃"
-                : "🍂";
-        left =
-            "25%";
-        top =
-            "52%";
-    }
-    else if (
-        variable.id === "oceans"
-    ) {
-        emoji =
-            "💧";
-        left =
-            "82%";
-        top =
-            "72%";
-    }
-    else if (
-        variable.id === "soils"
-    ) {
-        emoji =
-            "🌱";
-        left =
-            "45%";
-        top =
-            "82%";
-    }
-    else if (
-        variable.id === "wildfires"
-    ) {
-        emoji =
-            "🔥";
-        left =
-            "62%";
-        top =
-            "72%";
-    }
-    else if (
-        variable.group === "human"
-    ) {
-        emoji =
-            variable.id === "cars"
-                ? "💨"
-                : variable.id === "power"
-                    ? "☁️"
-                    : "•";
-        left =
-            "48%";
-        top =
-            "34%";
-    }
-    else {
-        emoji =
-            variable.icon;
-        left =
-            "58%";
-        top =
-            "50%";
-    }
-    particle.textContent =
-        emoji;
-    particle.style.left =
-        left;
-    particle.style.top =
-        top;
-    particle.style.setProperty(
-        "--rx",
-        `${-20 + Math.random() * 40}px`
-    );
-    particle.style.setProperty(
-        "--ry",
-        `${-35 - Math.random() * 35}px`
-    );
-    stage.appendChild(
-        particle
-    );
-    setTimeout(
-        () => {
-            particle.remove();
-        },
-        850
-    );
-}
-function triggerFactorReaction(
-    variable
-) {
-    createReactionParticle(
-        variable
-    );
-    /* Direct visual pulse */
-    const selectorMap = {
-        forests:
-            ".tree",
-        oceans:
-            ".ocean-layer, .fish, .whale",
-        soils:
-            ".soil-particles, .ground-layer",
-        wildfires:
-            ".wildfire",
-        power:
-            ".factory, .factory-smoke",
-        cement:
-            ".factory",
-        refineries:
-            ".factory",
-        landfills:
-            ".ground-layer",
-        gas:
-            ".factory",
-        cars:
-            ".air-particles",
-        airplanes:
-            ".cloud, .air-particles",
-        animals:
-            ".air-particles",
-        volcanoes:
-            ".air-particles",
-        decay:
-            ".falling-leaves"
-    };
-    const selector =
-        selectorMap[
-            variable.id
-        ];
-    if (!selector) {
-        return;
-    }
-    document
-        .querySelectorAll(
-            selector
-        )
-        .forEach(
-            element => {
-                element.animate(
-                    [
-                        {
-                            scale: "1"
-                        },
-                        {
-                            scale: "1.035"
-                        },
-                        {
-                            scale: "1"
-                        }
-                    ],
-                    {
-                        duration: 260,
-                        easing: "ease-out"
-                    }
-                );
-            }
-        );
-}
-/* =========================================================
-   EXTRA PARTICLES
-   ========================================================= */
-function createExtraParticles() {
-    if (!stage) {
-        return;
-    }
-    if (
-        stage.querySelector(
-            ".extra-particle"
-        )
-    ) {
-        return;
-    }
-    for (
-        let i = 0;
-        i < 8;
-        i++
-    ) {
-        const particle =
-            document.createElement(
-                "span"
-            );
-        particle.className =
-            `extra-particle extra-particle-${i + 1}`;
-        particle.setAttribute(
-            "aria-hidden",
-            "true"
-        );
-        stage.appendChild(
-            particle
-        );
-    }
-}
-/* =========================================================
-   CONTINUOUS MOTION LOOP
-   ========================================================= */
-function continuousSceneMotion(
-    time
-) {
-    if (!stage) {
-        return;
-    }
-    const seconds =
-        time / 1000;
-    const stress =
-        Number(
-            getComputedStyle(
-                stage
-            ).getPropertyValue(
-                "--stress"
-            )
-        ) || 0;
-    const air =
-        Number(
-            getComputedStyle(
-                stage
-            ).getPropertyValue(
-                "--air-stress"
-            )
-        ) || 0;
-    const ocean =
-        Number(
-            getComputedStyle(
-                stage
-            ).getPropertyValue(
-                "--ocean-stress"
-            )
-        ) || 0;
-    stage.style.setProperty(
-        "--motion-wave",
-        Math.sin(
-            seconds * 1.7
-        ).toFixed(3)
-    );
-    stage.style.setProperty(
-        "--motion-fast",
-        (
-            0.5 +
-            0.5 *
-            Math.sin(
-                seconds *
-                (1.4 + stress * 2)
-            )
-        ).toFixed(3)
-    );
-    stage.style.setProperty(
-        "--motion-slow",
-        (
-            0.5 +
-            0.5 *
-            Math.sin(
-                seconds * 0.55
-            )
-        ).toFixed(3)
-    );
-    stage.style.setProperty(
-        "--air-motion",
-        (
-            0.5 +
-            0.5 *
-            Math.sin(
-                seconds *
-                (1.1 + air * 2)
-            )
-        ).toFixed(3)
-    );
-    stage.style.setProperty(
-        "--ocean-motion",
-        (
-            0.5 +
-            0.5 *
-            Math.sin(
-                seconds *
-                (1.5 - ocean * 0.55)
-            )
-        ).toFixed(3)
-    );
-    sceneAnimationFrame =
-        requestAnimationFrame(
-            continuousSceneMotion
-        );
-}
-/* =========================================================
-   RESPONSIVE CANVAS
-   ========================================================= */
-window.addEventListener(
-    "resize",
-    resizeCanvas
-);
-/* =========================================================
-   INITIALISE
-   ========================================================= */
+graphType.addEventListener("change",()=>{updateGraphDescription();drawGraph()});
+window.addEventListener("resize",resizeCanvas);
 createControls();
 createExtraParticles();
-requestAnimationFrame(
-    () => {
-        resizeCanvas();
-        updateModel();
-    }
-);
-/* =========================================================
-   START CONTINUOUS ANIMATION
-   ========================================================= */
-requestAnimationFrame(
-    continuousSceneMotion
-);
-/* =========================================================
-   PERIODIC ENVIRONMENT REACTION
-   ========================================================= */
-setInterval(
-    () => {
-        if (!stage) {
-            return;
-        }
-        const state =
-            getState(
-                currentData.net
-            );
-        const stageElements =
-            document.querySelectorAll(
-                ".tree, .factory, .ocean-layer, .wildfire"
-            );
-        stageElements.forEach(
-            element => {
-                element.animate(
-                    [
-                        {
-                            translateY: "0px"
-                        },
-                        {
-                            translateY:
-                                state === "critical"
-                                    ? "-4px"
-                                    : "-2px"
-                        },
-                        {
-                            translateY: "0px"
-                        }
-                    ],
-                    {
-                        duration:
-                            state === "critical"
-                                ? 650
-                                : state === "warning"
-                                    ? 900
-                                    : 1250,
-                        easing:
-                            "ease-in-out"
-                    }
-                );
-            }
-        );
-    },
-    2200
-);
+updateGraphDescription();
+requestAnimationFrame(()=>{
+resizeCanvas();
+updateModel(false);
+});
+requestAnimationFrame(continuousSceneMotion);
+setInterval(()=>{
+const state=getState(currentData.net);
+document.querySelectorAll(".tree,.factory,.ocean-layer,.wildfire").forEach(element=>{
+element.classList.remove("scene-pulse");
+void element.offsetWidth;
+if(state!=="stable"||Math.random()>.35)element.classList.add("scene-pulse");
+});
+},2200);

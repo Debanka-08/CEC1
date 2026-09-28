@@ -1,415 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planetary Carbon Balance Sandbox</title>
-    <meta
-        name="description"
-        content="Interactive planetary carbon balance sandbox showing how human emissions and natural carbon sinks affect environmental conditions."
-    >
-    <link rel="stylesheet" href="sandbox.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planetary Carbon Balance Sandbox</title>
+<meta name="description" content="Interactive planetary carbon balance sandbox showing how human emissions and natural carbon sinks affect environmental conditions.">
+<link rel="stylesheet" href="sandbox.css">
 </head>
 <body>
-    <div class="app-shell">
-        <!-- BACK -->
-        <a href="index.html" class="back-button">
-            ← Back
-        </a>
-        <!-- HEADER -->
-        <header class="sandbox-header">
-            <div>
-                <p class="eyebrow">INTERACTIVE CLIMATE MODEL</p>
-                <h1>Planetary Carbon Balance Sandbox</h1>
-                <p class="header-description">
-                    Adjust the climate variables and observe how the balance between
-                    carbon emissions and natural absorption changes the planet.
-                </p>
-            </div>
-            <div class="model-badge">
-                <span class="pulse-dot"></span>
-                LIVE MODEL
-            </div>
-        </header>
-        <!-- =====================================================
-             ENVIRONMENTAL VISUAL STAGE
-        ====================================================== -->
-        <section class="environment-section">
-            <div class="section-heading">
-                <div>
-                    <span class="section-number">01</span>
-                    <h2>Environmental Response</h2>
-                </div>
-                <p>
-                    The landscape changes continuously as the carbon balance shifts.
-                </p>
-            </div>
-            <div id="environmentStage" class="environment-stage stable">
-                <!-- SKY -->
-                <div class="sky-layer">
-                    <div class="sun">☀️</div>
-                    <div class="cloud cloud-one">☁️</div>
-                    <div class="cloud cloud-two">☁️</div>
-                    <div class="cloud cloud-three">☁️</div>
-                    <div class="birds birds-one">🕊️ 🕊️</div>
-                    <div class="birds birds-two">🦅</div>
-                    <div class="rain-layer">
-                        <span>│</span><span>│</span><span>│</span>
-                        <span>│</span><span>│</span><span>│</span>
-                        <span>│</span><span>│</span>
-                        <span>│</span><span>│</span>
-                        <span>│</span><span>│</span>
-                    </div>
-                    <div class="lightning">⚡</div>
-                    <div class="smog-layer"></div>
-                    <div class="ash-layer"></div>
-                    <!-- FLOATING ATMOSPHERIC PARTICLES -->
-                    <div class="air-particles">
-                        <span></span><span></span><span></span>
-                        <span></span><span></span><span></span>
-                        <span></span><span></span><span></span>
-                        <span></span><span></span><span></span>
-                    </div>
-                </div>
-                <!-- MOUNTAINS -->
-                <div class="mountains">
-                    <div class="mountain mountain-a"></div>
-                    <div class="mountain mountain-b"></div>
-                    <div class="mountain mountain-c"></div>
-                </div>
-                <!-- GROUND -->
-                <div class="ground-layer">
-                    <div class="grass-patch grass-one">🌱 🌱 🌿</div>
-                    <div class="grass-patch grass-two">🌿 🌱</div>
-                    <div class="grass-patch grass-three">🌱 🌿 🌱</div>
-                    <!-- TREES -->
-                    <div class="tree tree-one">
-                        <div class="tree-fire">🔥</div>
-                        <div class="tree-normal">🌲</div>
-                    </div>
-                    <div class="tree tree-two">
-                        <div class="tree-fire">🔥</div>
-                        <div class="tree-normal">🌲</div>
-                    </div>
-                    <div class="tree tree-three">
-                        <div class="tree-fire">🔥</div>
-                        <div class="tree-normal">🌳</div>
-                    </div>
-                    <div class="tree tree-four">
-                        <div class="tree-fire">🔥</div>
-                        <div class="tree-normal">🌲</div>
-                    </div>
-                    <!-- FALLING LEAVES -->
-                    <div class="falling-leaves">
-                        <span>🍂</span>
-                        <span>🍂</span>
-                        <span>🍁</span>
-                        <span>🍂</span>
-                        <span>🍁</span>
-                    </div>
-                    <!-- FACTORY -->
-                    <div class="factory">
-                        <div class="factory-building">
-                            🏭
-                        </div>
-                        <div class="factory-smoke">
-                            <span>💨</span>
-                            <span>💨</span>
-                            <span>💨</span>
-                            <span>💨</span>
-                        </div>
-                    </div>
-                    <!-- WILDFIRE -->
-                    <div class="wildfire">
-                        🔥 🔥 🔥
-                    </div>
-                    <!-- SOIL PARTICLES -->
-                    <div class="soil-particles">
-                        <span>•</span>
-                        <span>•</span>
-                        <span>•</span>
-                        <span>•</span>
-                        <span>•</span>
-                    </div>
-                </div>
-                <!-- OCEAN -->
-                <div class="ocean-layer">
-                    <div class="wave wave-one"></div>
-                    <div class="wave wave-two"></div>
-                    <div class="wave wave-three"></div>
-                    <div class="fish fish-one">🐟</div>
-                    <div class="fish fish-two">🐠</div>
-                    <div class="fish fish-three">🐟</div>
-                    <div class="whale">🐋</div>
-                    <div class="ocean-bubbles">
-                        <span>○</span>
-                        <span>○</span>
-                        <span>○</span>
-                        <span>○</span>
-                        <span>○</span>
-                    </div>
-                    <div class="acidification">
-                        <span>☠</span>
-                        <span>☠</span>
-                        <span>☠</span>
-                    </div>
-                </div>
-                <!-- OVERALL STATUS -->
-                <div class="environment-status">
-                    <div id="statusIcon" class="status-icon">✓</div>
-                    <div>
-                        <span id="statusLabel">STABLE</span>
-                        <p id="statusDescription">
-                            The carbon system is within a relatively balanced range.
-                        </p>
-                    </div>
-                </div>
-                <!-- VISUAL LEGEND -->
-                <div class="visual-legend">
-                    <span>
-                        <i class="legend-dot healthy"></i>
-                        Healthy
-                    </span>
-                    <span>
-                        <i class="legend-dot warning"></i>
-                        Stressed
-                    </span>
-                    <span>
-                        <i class="legend-dot critical"></i>
-                        Collapse
-                    </span>
-                </div>
-            </div>
-        </section>
-        <!-- =====================================================
-             TELEMETRY
-        ====================================================== -->
-        <section class="telemetry-section">
-            <div class="telemetry-card">
-                <div class="telemetry-header">
-                    <div>
-                        <p class="eyebrow">CARBON TELEMETRY</p>
-                        <h2>Planetary Carbon Balance</h2>
-                    </div>
-                    <div
-                        id="telemetryStatus"
-                        class="telemetry-status stable-status"
-                        aria-live="polite"
-                    >
-                        ✓ STABLE
-                    </div>
-                </div>
-                <div class="telemetry-grid">
-                    <div class="metric-card emissions">
-                        <span class="metric-icon">↑</span>
-                        <p>Gross Emissions</p>
-                        <strong>
-                            <span id="emissionsValue">0</span>
-                            <small>kt</small>
-                        </strong>
-                    </div>
-                    <div class="metric-card absorption">
-                        <span class="metric-icon">↓</span>
-                        <p>Gross Absorption</p>
-                        <strong>
-                            <span id="absorptionValue">0</span>
-                            <small>kt</small>
-                        </strong>
-                    </div>
-                    <div class="metric-card balance">
-                        <span class="metric-icon">Δ</span>
-                        <p>Net Balance</p>
-                        <strong>
-                            <span id="balanceValue">0</span>
-                            <small>kt</small>
-                        </strong>
-                    </div>
-                </div>
-                <!-- ACCESSIBLE LIVE DESCRIPTION -->
-                <div
-                    id="liveClimateMessage"
-                    class="live-climate-message"
-                    aria-live="polite"
-                    aria-atomic="true"
-                >
-                    Climate state: Stable. Natural sinks are currently able to offset
-                    the modelled emissions within the defined threshold.
-                </div>
-                <!-- GRAPH CONTROLS -->
-                <div class="graph-header">
-                    <div>
-                        <p class="eyebrow">DATA VISUALISATION</p>
-                        <h3>Carbon System Graphs</h3>
-                    </div>
-                    <label class="graph-select-wrap">
-                        <span>Graph type</span>
-                        <select id="graphType">
-                            <option value="balance">Balance Bars</option>
-                            <option value="sources">Emission Sources</option>
-                            <option value="sinks">Carbon Sinks</option>
-                            <option value="donut">Source Composition</option>
-                            <option value="history">Balance History</option>
-                        </select>
-                    </label>
-                </div>
-                <div class="graph-description" id="graphDescription">
-                    Gross emissions and gross absorption are shown as horizontal bars.
-                </div>
-                <div class="chart-wrapper">
-                    <canvas id="carbonChart"></canvas>
-                </div>
-            </div>
-        </section>
-        <!-- =====================================================
-             INFORMATION STRIP
-        ====================================================== -->
-        <section class="climate-information">
-            <div class="section-heading">
-                <div>
-                    <span class="section-number">02</span>
-                    <h2>Climate Indicators</h2>
-                </div>
-                <p>
-                    These indicators translate the model into visible environmental effects.
-                </p>
-            </div>
-            <div class="indicator-grid">
-                <div class="indicator-card">
-                    <span>🌡️</span>
-                    <div>
-                        <small>ATMOSPHERIC PRESSURE</small>
-                        <strong id="airIndicator">Low</strong>
-                    </div>
-                </div>
-                <div class="indicator-card">
-                    <span>🌲</span>
-                    <div>
-                        <small>VEGETATION</small>
-                        <strong id="forestIndicator">Healthy</strong>
-                    </div>
-                </div>
-                <div class="indicator-card">
-                    <span>🌊</span>
-                    <div>
-                        <small>OCEAN CONDITION</small>
-                        <strong id="oceanIndicator">Healthy</strong>
-                    </div>
-                </div>
-                <div class="indicator-card">
-                    <span>💨</span>
-                    <div>
-                        <small>AIR QUALITY</small>
-                        <strong id="airQualityIndicator">Clear</strong>
-                    </div>
-                </div>
-                <div class="indicator-card">
-                    <span>🌱</span>
-                    <div>
-                        <small>SOIL CONDITION</small>
-                        <strong id="soilIndicator">Stable</strong>
-                    </div>
-                </div>
-                <div class="indicator-card">
-                    <span>🐟</span>
-                    <div>
-                        <small>MARINE LIFE</small>
-                        <strong id="marineIndicator">Active</strong>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- =====================================================
-             CONTROL MATRIX
-        ====================================================== -->
-        <section class="controls-section">
-            <div class="section-heading">
-                <div>
-                    <span class="section-number">03</span>
-                    <h2>Climate Variables</h2>
-                </div>
-                <p>
-                    Move any slider from 0% to 100% and watch the planetary response.
-                </p>
-            </div>
-            <div class="controls-grid">
-                <!-- HUMAN SOURCES -->
-                <div class="control-column human-column">
-                    <div class="column-title">
-                        <span>01</span>
-                        <div>
-                            <h3>Human-Made Carbon Sources</h3>
-                            <p>Activities that add carbon to the atmosphere.</p>
-                        </div>
-                    </div>
-                    <div id="humanControls"></div>
-                </div>
-                <!-- NATURAL SOURCES -->
-                <div class="control-column natural-column">
-                    <div class="column-title">
-                        <span>02</span>
-                        <div>
-                            <h3>Natural Carbon Sources</h3>
-                            <p>Natural processes that release carbon.</p>
-                        </div>
-                    </div>
-                    <div id="naturalControls"></div>
-                </div>
-                <!-- NATURAL SINKS -->
-                <div class="control-column sink-column">
-                    <div class="column-title">
-                        <span>03</span>
-                        <div>
-                            <h3>Natural Carbon Sinks</h3>
-                            <p>Natural systems that remove carbon.</p>
-                        </div>
-                    </div>
-                    <div id="sinkControls"></div>
-                </div>
-            </div>
-        </section>
-        <!-- =====================================================
-             EXPLANATION
-        ====================================================== -->
-        <section class="explanation-section">
-            <div class="explanation-main">
-                <p class="eyebrow">HOW TO READ THE MODEL</p>
-                <h2>
-                    Carbon balance is more than a single number.
-                </h2>
-                <p>
-                    Carbon enters the atmosphere from human and natural sources.
-                    Forests, oceans and soils remove part of that carbon. The sandbox
-                    compares these two sides and visualises the resulting environmental
-                    pressure.
-                </p>
-            </div>
-            <div class="formula-card">
-                <span>MODEL RELATIONSHIP</span>
-                <strong>
-                    Net Balance =
-                    <b>Emissions</b>
-                    −
-                    <b>Absorption</b>
-                </strong>
-                <small>
-                    This is an educational normalised model, not a scientific
-                    forecasting system.
-                </small>
-            </div>
-        </section>
-        <!-- =====================================================
-             FOOTER
-        ====================================================== -->
-        <footer class="sandbox-footer">
-            <div>
-                <strong>Planetary Carbon Balance Sandbox</strong>
-                <span>Interactive educational model</span>
-            </div>
-            <span>
-                PM SHRI K.V. Andrews Ganj
-            </span>
-        </footer>
-    </div>
-    <script src="sandbox.js"></script>
+<div class="app-shell">
+<a href="index.html" class="back-button">← Back</a>
+<header class="sandbox-header">
+<div>
+<p class="eyebrow">INTERACTIVE CLIMATE MODEL</p>
+<h1>Planetary Carbon Balance Sandbox</h1>
+<p class="header-description">Adjust the climate variables and observe how the balance between carbon emissions and natural absorption changes the planet.</p>
+</div>
+<div class="model-badge"><span class="pulse-dot"></span>LIVE MODEL</div>
+</header>
+<section class="environment-section">
+<div class="section-heading">
+<div><span class="section-number">01</span><h2>Environmental Response</h2></div>
+<p>The landscape changes continuously as the carbon balance shifts.</p>
+</div>
+<div id="environmentStage" class="environment-stage stable" aria-label="Animated environmental response">
+<div class="sky-layer">
+<div class="sun">☀️</div>
+<div class="cloud cloud-one">☁️</div>
+<div class="cloud cloud-two">☁️</div>
+<div class="cloud cloud-three">☁️</div>
+<div class="birds birds-one">🕊️ 🕊️</div>
+<div class="birds birds-two">🦅</div>
+<div class="rain-layer"><span>│</span><span>│</span><span>│</span><span>│</span><span>│</span><span>│</span><span>│</span><span>│</span><span>│</span><span>│</span><span>│</span><span>│</span></div>
+<div class="lightning">⚡</div>
+<div class="smog-layer"></div>
+<div class="ash-layer"></div>
+<div class="air-particles"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+</div>
+<div class="mountains"><div class="mountain mountain-a"></div><div class="mountain mountain-b"></div><div class="mountain mountain-c"></div></div>
+<div class="ground-layer">
+<div class="grass-patch grass-one">🌱 🌱 🌿</div>
+<div class="grass-patch grass-two">🌿 🌱</div>
+<div class="grass-patch grass-three">🌱 🌿 🌱</div>
+<div class="tree tree-one"><div class="tree-fire">🔥</div><div class="tree-normal">🌲</div></div>
+<div class="tree tree-two"><div class="tree-fire">🔥</div><div class="tree-normal">🌲</div></div>
+<div class="tree tree-three"><div class="tree-fire">🔥</div><div class="tree-normal">🌳</div></div>
+<div class="tree tree-four"><div class="tree-fire">🔥</div><div class="tree-normal">🌲</div></div>
+<div class="falling-leaves"><span>🍂</span><span>🍂</span><span>🍁</span><span>🍂</span><span>🍁</span></div>
+<div class="factory"><div class="factory-building">🏭</div><div class="factory-smoke"><span>💨</span><span>💨</span><span>💨</span><span>💨</span></div></div>
+<div class="wildfire">🔥 🔥 🔥</div>
+<div class="soil-particles"><span>•</span><span>•</span><span>•</span><span>•</span><span>•</span></div>
+</div>
+<div class="ocean-layer">
+<div class="wave wave-one"></div>
+<div class="wave wave-two"></div>
+<div class="wave wave-three"></div>
+<div class="fish fish-one">🐟</div>
+<div class="fish fish-two">🐠</div>
+<div class="fish fish-three">🐟</div>
+<div class="whale">🐋</div>
+<div class="ocean-bubbles"><span>○</span><span>○</span><span>○</span><span>○</span><span>○</span></div>
+<div class="acidification"><span>☠</span><span>☠</span><span>☠</span></div>
+</div>
+<div class="environment-status">
+<div id="statusIcon" class="status-icon">✓</div>
+<div><span id="statusLabel">STABLE</span><p id="statusDescription">The carbon system is within a relatively balanced range.</p></div>
+</div>
+<div class="visual-legend">
+<span><i class="legend-dot healthy"></i>Healthy</span>
+<span><i class="legend-dot warning"></i>Stressed</span>
+<span><i class="legend-dot critical"></i>Collapse</span>
+</div>
+<div class="simulation-time">
+<span class="time-label">SIMULATION TIME</span>
+<strong id="simulationYear">2026</strong>
+<span id="simulationStep">BASELINE</span>
+</div>
+<div class="change-indicator" id="changeIndicator" aria-live="polite">
+<span id="changeArrow">→</span>
+<strong id="changeTitle">BASELINE</strong>
+<small id="changeText">Move a climate variable to begin the simulation.</small>
+</div>
+</div>
+</section>
+<section class="telemetry-section">
+<div class="telemetry-card">
+<div class="telemetry-header">
+<div><p class="eyebrow">CARBON TELEMETRY</p><h2>Planetary Carbon Balance</h2></div>
+<div id="telemetryStatus" class="telemetry-status stable-status" aria-live="polite">✓ STABLE</div>
+</div>
+<div class="telemetry-grid">
+<div class="metric-card emissions" id="emissionsCard"><span class="metric-icon">↑</span><p>Gross Emissions</p><strong><span id="emissionsValue">0</span><small>kt</small></strong><div class="metric-change" id="emissionsChange">—</div></div>
+<div class="metric-card absorption" id="absorptionCard"><span class="metric-icon">↓</span><p>Gross Absorption</p><strong><span id="absorptionValue">0</span><small>kt</small></strong><div class="metric-change" id="absorptionChange">—</div></div>
+<div class="metric-card balance" id="balanceCard"><span class="metric-icon">Δ</span><p>Net Balance</p><strong><span id="balanceValue">0</span><small>kt</small></strong><div class="metric-change" id="balanceChange">—</div></div>
+</div>
+<div class="comparison-strip" aria-live="polite">
+<div><span>PREVIOUS</span><strong id="previousBalance">0 kt</strong></div>
+<div class="comparison-arrow" id="comparisonArrow">→</div>
+<div><span>CURRENT</span><strong id="currentBalance">0 kt</strong></div>
+<div><span>CHANGE</span><strong id="balanceDelta">0 kt</strong></div>
+</div>
+<div id="liveClimateMessage" class="live-climate-message" aria-live="polite" aria-atomic="true">Climate state: Stable. Natural sinks are currently able to offset the modelled emissions within the defined threshold.</div>
+<div class="graph-header">
+<div><p class="eyebrow">DATA VISUALISATION</p><h3>Carbon System Graphs</h3></div>
+<label class="graph-select-wrap"><span>Graph type</span><select id="graphType"><option value="balance">Balance Bars</option><option value="sources">Emission Sources</option><option value="sinks">Carbon Sinks</option><option value="donut">Source Composition</option><option value="history">Balance History</option></select></label>
+</div>
+<div class="graph-description" id="graphDescription">Gross emissions and gross absorption are shown as horizontal bars.</div>
+<div class="chart-wrapper"><canvas id="carbonChart"></canvas><div class="chart-live-value" id="chartLiveValue">NET 0</div></div>
+</div>
+</section>
+<section class="climate-information">
+<div class="section-heading">
+<div><span class="section-number">02</span><h2>Climate Indicators</h2></div>
+<p>These indicators translate the model into visible environmental effects.</p>
+</div>
+<div class="indicator-grid">
+<div class="indicator-card"><span>🌡️</span><div><small>ATMOSPHERIC PRESSURE</small><strong id="airIndicator">Low</strong><em id="airDetail">Stable</em></div></div>
+<div class="indicator-card"><span>🌲</span><div><small>VEGETATION</small><strong id="forestIndicator">Healthy</strong><em id="forestDetail">Stable</em></div></div>
+<div class="indicator-card"><span>🌊</span><div><small>OCEAN CONDITION</small><strong id="oceanIndicator">Healthy</strong><em id="oceanDetail">Stable</em></div></div>
+<div class="indicator-card"><span>💨</span><div><small>AIR QUALITY</small><strong id="airQualityIndicator">Clear</strong><em id="airQualityDetail">Stable</em></div></div>
+<div class="indicator-card"><span>🌱</span><div><small>SOIL CONDITION</small><strong id="soilIndicator">Stable</strong><em id="soilDetail">Stable</em></div></div>
+<div class="indicator-card"><span>🐟</span><div><small>MARINE LIFE</small><strong id="marineIndicator">Active</strong><em id="marineDetail">Stable</em></div></div>
+</div>
+</section>
+<section class="controls-section">
+<div class="section-heading">
+<div><span class="section-number">03</span><h2>Climate Variables</h2></div>
+<p>Move any slider from 0% to 100% and watch the planetary response.</p>
+</div>
+<div class="controls-grid">
+<div class="control-column human-column"><div class="column-title"><span>01</span><div><h3>Human-Made Carbon Sources</h3><p>Activities that add carbon to the atmosphere.</p></div></div><div id="humanControls"></div></div>
+<div class="control-column natural-column"><div class="column-title"><span>02</span><div><h3>Natural Carbon Sources</h3><p>Natural processes that release carbon.</p></div></div><div id="naturalControls"></div></div>
+<div class="control-column sink-column"><div class="column-title"><span>03</span><div><h3>Natural Carbon Sinks</h3><p>Natural systems that remove carbon.</p></div></div><div id="sinkControls"></div></div>
+</div>
+</section>
+<section class="explanation-section">
+<div class="explanation-main">
+<p class="eyebrow">HOW TO READ THE MODEL</p>
+<h2>Carbon balance is more than a single number.</h2>
+<p>Carbon enters the atmosphere from human and natural sources. Forests, oceans and soils remove part of that carbon. The sandbox compares these two sides and visualises the resulting environmental pressure.</p>
+</div>
+<div class="formula-card">
+<span>MODEL RELATIONSHIP</span>
+<strong>Net Balance = <b>Emissions</b> − <b>Absorption</b></strong>
+<small>This is an educational normalised model, not a scientific forecasting system.</small>
+</div>
+</section>
+<footer class="sandbox-footer">
+<div><strong>Planetary Carbon Balance Sandbox</strong><span>Interactive educational model</span></div>
+<span>PM SHRI K.V. Andrews Ganj</span>
+</footer>
+</div>
+<div id="accessibilityLive" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
+<script src="sandbox.js"></script>
 </body>
 </html>
